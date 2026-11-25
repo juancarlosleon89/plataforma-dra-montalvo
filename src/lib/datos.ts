@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { supabasePublico } from "@/lib/supabase/server";
+import { combinarTextos } from "@/lib/textos";
 import type {
   Caso, Categoria, ConfiguracionAgenda, ConfiguracionSitio, Horario, Institucional, ItemGaleria, Pregunta, Servicio, Testimonio,
 } from "@/lib/tipos";
@@ -75,3 +76,10 @@ export function resumenHorarios(horarios: Horario[]) {
     horas: g.texto,
   }));
 }
+
+
+/** Textos editables del sitio (Panel → Textos del sitio), combinados con los valores por defecto. */
+export const obtenerTextos = cache(async () => {
+  const { data } = await supabasePublico().from("textos_sitio").select("id, valor");
+  return combinarTextos(data);
+});

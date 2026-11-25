@@ -2,12 +2,12 @@ import Link from "next/link";
 import { Acordeon, Cta, NavLink, Rotulo, SpecTable } from "@/components/ui";
 import { Comparador, FormularioContacto, Galeria, RevelarPalabras } from "@/components/sitio/Interactivos";
 import { TarjetaServicio } from "@/components/sitio/TarjetaServicio";
-import { obtenerContenido, obtenerServicios, obtenerSitio, resumenHorarios } from "@/lib/datos";
+import { obtenerContenido, obtenerServicios, obtenerSitio, obtenerTextos, resumenHorarios } from "@/lib/datos";
 import { enlaceWhatsapp } from "@/lib/formato";
 import { env } from "@/lib/env";
 
 export default async function Inicio() {
-  const [{ sitio, inst }, { servicios }, contenido] = await Promise.all([obtenerSitio(), obtenerServicios(), obtenerContenido()]);
+  const [{ sitio, inst }, { servicios }, contenido, t] = await Promise.all([obtenerSitio(), obtenerServicios(), obtenerContenido(), obtenerTextos()]);
   const wa = enlaceWhatsapp(sitio);
   const destacados = servicios.filter((s) => s.destacado).slice(0, 6);
   const horarios = resumenHorarios(contenido.horarios);
@@ -22,20 +22,20 @@ export default async function Inicio() {
   const mapsQ = encodeURIComponent(sitio.maps_query ?? sitio.direccion ?? "");
 
   const perfilFilas = [
-    inst.perfil_especialidades.length > 0 && { etiqueta: "Especialidades", valor: inst.perfil_especialidades.join(" · ") },
-    inst.perfil_formacion.length > 0 && { etiqueta: "Formación", valor: inst.perfil_formacion.map((f) => [f.titulo, f.institucion, f.anio].filter(Boolean).join(", ")).join(" / ") },
-    inst.perfil_experiencia && { etiqueta: "Experiencia", valor: inst.perfil_experiencia },
-    inst.perfil_certificaciones.length > 0 && { etiqueta: "Certificaciones", valor: inst.perfil_certificaciones.join(" · ") },
-    inst.perfil_cursos.length > 0 && { etiqueta: "Cursos", valor: inst.perfil_cursos.join(" · ") },
+    inst.perfil_especialidades.length > 0 && { etiqueta: t["perfil.especialidades"], valor: inst.perfil_especialidades.join(" · ") },
+    inst.perfil_formacion.length > 0 && { etiqueta: t["perfil.formacion"], valor: inst.perfil_formacion.map((f) => [f.titulo, f.institucion, f.anio].filter(Boolean).join(", ")).join(" / ") },
+    inst.perfil_experiencia && { etiqueta: t["perfil.experiencia"], valor: inst.perfil_experiencia },
+    inst.perfil_certificaciones.length > 0 && { etiqueta: t["perfil.certificaciones"], valor: inst.perfil_certificaciones.join(" · ") },
+    inst.perfil_cursos.length > 0 && { etiqueta: t["perfil.cursos"], valor: inst.perfil_cursos.join(" · ") },
   ].filter(Boolean) as { etiqueta: string; valor: string }[];
 
   const contactoFilas = [
-    { etiqueta: "Dirección", valor: `${sitio.direccion ?? ""}${sitio.ciudad ? `, ${sitio.ciudad}` : ""}` },
-    sitio.referencias && { etiqueta: "Referencias", valor: sitio.referencias },
-    horarios.length > 0 && { etiqueta: "Horarios", valor: <>{horarios.map((h) => <span key={h.dias} className="block">{h.dias}: {h.horas}</span>)}</> },
-    sitio.telefono && { etiqueta: "Teléfono", valor: <a href={`tel:${sitio.telefono}`}>{sitio.telefono}</a> },
-    sitio.email && { etiqueta: "Correo", valor: <a href={`mailto:${sitio.email}`}>{sitio.email}</a> },
-    sitio.redes?.instagram && { etiqueta: "Redes", valor: <a href={sitio.redes.instagram} target="_blank" rel="noopener noreferrer">Instagram</a> },
+    { etiqueta: t["contacto.direccion"], valor: `${sitio.direccion ?? ""}${sitio.ciudad ? `, ${sitio.ciudad}` : ""}` },
+    sitio.referencias && { etiqueta: t["contacto.referencias"], valor: sitio.referencias },
+    horarios.length > 0 && { etiqueta: t["contacto.horarios"], valor: <>{horarios.map((h) => <span key={h.dias} className="block">{h.dias}: {h.horas}</span>)}</> },
+    sitio.telefono && { etiqueta: t["contacto.telefono"], valor: <a href={`tel:${sitio.telefono}`}>{sitio.telefono}</a> },
+    sitio.email && { etiqueta: t["contacto.correo"], valor: <a href={`mailto:${sitio.email}`}>{sitio.email}</a> },
+    sitio.redes?.instagram && { etiqueta: t["contacto.redes"], valor: <a href={sitio.redes.instagram} target="_blank" rel="noopener noreferrer">Instagram</a> },
   ].filter(Boolean) as { etiqueta: string; valor: React.ReactNode }[];
 
   const jsonLd = {
@@ -70,27 +70,27 @@ export default async function Inicio() {
           <div className="hero__action">
             <p className="t-body hero__sub">{sitio.hero_subtitulo}</p>
             <div className="hero__ctas">
-              <Cta href="/agendar" variante="acento"><span>Agendar cita</span><span aria-hidden="true">→</span></Cta>
-              <Cta href={wa} variante="contorno" externo><span>Escribir por WhatsApp</span></Cta>
+              <Cta href="/agendar" variante="acento"><span>{t["inicio.boton_agendar"]}</span><span aria-hidden="true">→</span></Cta>
+              <Cta href={wa} variante="contorno" externo><span>{t["inicio.boton_whatsapp"]}</span></Cta>
             </div>
           </div>
         </div>
       </section>
 
       <section className="statement" aria-label="Filosofía de atención">
-        <RevelarPalabras texto="Escuchar primero. Explicar cada opción. Tratar solo cuando el plan está claro y el paciente lo entiende." />
+        <RevelarPalabras texto={t["inicio.frase"]} />
       </section>
 
       {/* Nosotros */}
       <section className="section narrow" id="nosotros" aria-labelledby="nosotros-title">
-        <Rotulo>Nosotros</Rotulo>
-        <h2 id="nosotros-title" className="t-display">Un consultorio dedicado a devolver función y estética.</h2>
+        <Rotulo>{t["inicio.nosotros_rotulo"]}</Rotulo>
+        <h2 id="nosotros-title" className="t-display">{t["inicio.nosotros_titulo"]}</h2>
         {inst.presentacion && <p className="t-body-l soft">{inst.presentacion}</p>}
-        {inst.historia && <div><h3 className="t-label">Historia</h3><p className="t-body">{inst.historia}</p></div>}
+        {inst.historia && <div><h3 className="t-label">{t["inicio.historia"]}</h3><p className="t-body">{inst.historia}</p></div>}
         {(inst.mision || inst.vision) && (
           <div className="two">
-            {inst.mision && <div><h3 className="t-label">Misión</h3><p className="t-body">{inst.mision}</p></div>}
-            {inst.vision && <div><h3 className="t-label">Visión</h3><p className="t-body">{inst.vision}</p></div>}
+            {inst.mision && <div><h3 className="t-label">{t["inicio.mision"]}</h3><p className="t-body">{inst.mision}</p></div>}
+            {inst.vision && <div><h3 className="t-label">{t["inicio.vision"]}</h3><p className="t-body">{inst.vision}</p></div>}
           </div>
         )}
         {inst.valores.length > 0 && <p className="t-body soft">{inst.valores.join(" · ")}</p>}
@@ -103,7 +103,7 @@ export default async function Inicio() {
           <img src={inst.perfil_foto_url ?? "/img/doctora-consultorio.webp"} alt={`Retrato de ${inst.perfil_nombre}`} width={288} height={512} loading="lazy" />
         </div>
         <div className="doctor__info">
-          <Rotulo>Perfil profesional</Rotulo>
+          <Rotulo>{t["inicio.perfil_rotulo"]}</Rotulo>
           <h2 id="doctora-title" className="t-display">{inst.perfil_nombre}</h2>
           <p className="t-title doctor__role">{inst.perfil_titulo}</p>
           {inst.perfil_biografia && <p className="t-body-l soft">{inst.perfil_biografia}</p>}
@@ -115,18 +115,18 @@ export default async function Inicio() {
       {/* Servicios */}
       <section className="section" id="servicios" aria-labelledby="servicios-title">
         <div className="section__head">
-          <h2 id="servicios-title" className="t-display">Tratamientos <sup className="t-label">{servicios.length}</sup></h2>
-          <NavLink href="/tratamientos">Ver todos</NavLink>
+          <h2 id="servicios-title" className="t-display">{t["inicio.tratamientos_titulo"]} <sup className="t-label">{servicios.length}</sup></h2>
+          <NavLink href="/tratamientos">{t["inicio.ver_todos"]}</NavLink>
         </div>
-        <div className="cards">{destacados.map((s) => <TarjetaServicio key={s.id} s={s} wa={wa} />)}</div>
+        <div className="cards">{destacados.map((s) => <TarjetaServicio key={s.id} s={s} wa={wa} tx={t} />)}</div>
       </section>
 
       {/* Resultados */}
       <section className="section" id="resultados" aria-labelledby="resultados-title">
         <div className="narrow center">
-          <Rotulo>Antes y después</Rotulo>
-          <h2 id="resultados-title" className="t-display">Resultados</h2>
-          <p className="t-body soft">Casos reales de pacientes que autorizaron su publicación. Fotografías sin retoque, con la misma luz y encuadre antes y después.</p>
+          <Rotulo>{t["inicio.resultados_rotulo"]}</Rotulo>
+          <h2 id="resultados-title" className="t-display">{t["inicio.resultados_titulo"]}</h2>
+          <p className="t-body soft">{t["inicio.resultados_texto"]}</p>
         </div>
         {contenido.casos.length > 0 ? (
           <div className="cases">
@@ -139,7 +139,7 @@ export default async function Inicio() {
             ))}
           </div>
         ) : (
-          <p className="t-body soft center empty">Pronto publicaremos casos reales con autorización de los pacientes.</p>
+          <p className="t-body soft center empty">{t["inicio.resultados_vacio"]}</p>
         )}
       </section>
 
@@ -166,16 +166,16 @@ export default async function Inicio() {
       {/* Instalaciones */}
       <section className="section" id="instalaciones" aria-labelledby="instalaciones-title">
         <div className="section__head">
-          <h2 id="instalaciones-title" className="t-display">El consultorio</h2>
-          <p className="t-body soft section__aside">Conozca el espacio antes de su primera cita.</p>
+          <h2 id="instalaciones-title" className="t-display">{t["inicio.consultorio_titulo"]}</h2>
+          <p className="t-body soft section__aside">{t["inicio.consultorio_texto"]}</p>
         </div>
         <Galeria items={contenido.galeria} />
       </section>
 
       {/* Testimonios */}
       <section className="section narrow center" id="testimonios" aria-labelledby="testimonios-title">
-        <Rotulo>Pacientes</Rotulo>
-        <h2 id="testimonios-title" className="t-display">Experiencias</h2>
+        <Rotulo>{t["inicio.experiencias_rotulo"]}</Rotulo>
+        <h2 id="testimonios-title" className="t-display">{t["inicio.experiencias_titulo"]}</h2>
         <div className="testimonials">
           {contenido.testimonios.length > 0 ? contenido.testimonios.map((t) => (
             <blockquote className="quote" key={t.id}>
@@ -184,8 +184,8 @@ export default async function Inicio() {
             </blockquote>
           )) : (
             <>
-              <p className="t-body soft">Aquí se publicarán opiniones de pacientes que autoricen compartir su experiencia.</p>
-              {sitio.redes?.instagram && <NavLink href={sitio.redes.instagram} externo>Ver el consultorio en Instagram</NavLink>}
+              <p className="t-body soft">{t["inicio.experiencias_vacio"]}</p>
+              {sitio.redes?.instagram && <NavLink href={sitio.redes.instagram} externo>{t["inicio.experiencias_enlace"]}</NavLink>}
             </>
           )}
         </div>
@@ -193,17 +193,17 @@ export default async function Inicio() {
 
       {/* Llamado a agendar */}
       <section className="section narrow center" aria-labelledby="agenda-cta">
-        <Rotulo>Agenda en línea</Rotulo>
-        <h2 id="agenda-cta" className="t-display">Elija el día y la hora que le convienen.</h2>
-        <p className="t-body soft">Los horarios se actualizan en tiempo real. Recibirá la confirmación por correo, con un enlace para reprogramar o cancelar.</p>
-        <div><Cta href="/agendar"><span>Ver horarios disponibles</span><span aria-hidden="true">→</span></Cta></div>
+        <Rotulo>{t["inicio.agenda_rotulo"]}</Rotulo>
+        <h2 id="agenda-cta" className="t-display">{t["inicio.agenda_titulo"]}</h2>
+        <p className="t-body soft">{t["inicio.agenda_texto"]}</p>
+        <div><Cta href="/agendar"><span>{t["inicio.agenda_boton"]}</span><span aria-hidden="true">→</span></Cta></div>
       </section>
 
       {/* Instagram */}
       {(instagram.length > 0 || perfilInstagram) && (
         <section className="section" id="instagram" aria-labelledby="instagram-title">
           <div className="section__head">
-            <h2 id="instagram-title" className="t-display">Instagram</h2>
+            <h2 id="instagram-title" className="t-display">{t["inicio.instagram_titulo"]}</h2>
             {perfilInstagram && <NavLink href={perfilInstagram} externo>{`@${usuarioInstagram} ↗`}</NavLink>}
           </div>
           {instagram.length > 0 && (
@@ -217,7 +217,7 @@ export default async function Inicio() {
           )}
           {perfilInstagram && (
             <div className="center insta__cta">
-              <Cta href={perfilInstagram} externo variante="contorno"><span>Seguir en Instagram</span><span aria-hidden="true">↗</span></Cta>
+              <Cta href={perfilInstagram} externo variante="contorno"><span>{t["inicio.instagram_boton"]}</span><span aria-hidden="true">↗</span></Cta>
             </div>
           )}
         </section>
@@ -225,7 +225,7 @@ export default async function Inicio() {
 
       {/* Preguntas */}
       <section className="section faq" id="preguntas" aria-labelledby="faq-title">
-        <h2 id="faq-title" className="t-display center">Preguntas frecuentes</h2>
+        <h2 id="faq-title" className="t-display center">{t["inicio.faq_titulo"]}</h2>
         <Acordeon items={contenido.faq} />
       </section>
 
@@ -235,15 +235,15 @@ export default async function Inicio() {
           <iframe title="Mapa del consultorio" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={`https://www.google.com/maps?q=${mapsQ}&output=embed`} />
         </div>
         <div className="location__info">
-          <Rotulo>Ubicación y contacto</Rotulo>
-          <h2 id="contacto-title" className="t-display">Cómo llegar</h2>
+          <Rotulo>{t["inicio.contacto_rotulo"]}</Rotulo>
+          <h2 id="contacto-title" className="t-display">{t["inicio.contacto_titulo"]}</h2>
           <SpecTable filas={contactoFilas} />
           <div className="location__ctas">
-            <Cta href={`https://www.google.com/maps/search/?api=1&query=${mapsQ}`} externo><span>Abrir en Google Maps</span><span aria-hidden="true">↗</span></Cta>
-            <Cta href={wa} variante="contorno" externo><span>WhatsApp</span></Cta>
+            <Cta href={`https://www.google.com/maps/search/?api=1&query=${mapsQ}`} externo><span>{t["contacto.boton_mapa"]}</span><span aria-hidden="true">↗</span></Cta>
+            <Cta href={wa} variante="contorno" externo><span>{t["contacto.boton_whatsapp"]}</span></Cta>
           </div>
           <FormularioContacto />
-          <p className="t-caption soft">Sus datos se usan solo para responder su mensaje. <Link href="/privacidad" className="underline">Política de privacidad</Link>.</p>
+          <p className="t-caption soft">{t["contacto.aviso"]} <Link href="/privacidad" className="underline">{t["contacto.aviso_enlace"]}</Link>.</p>
         </div>
       </section>
     </>

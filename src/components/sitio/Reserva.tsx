@@ -2,13 +2,14 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { diaLocal, fechaLarga, hora } from "@/lib/formato";
+import { useTextos } from "@/components/sitio/TextosContexto";
+import { lineas } from "@/lib/textos";
 
 type Svc = { id: string; slug: string; nombre: string; duracion: number; descripcion: string | null };
 type Slot = { inicio: string; fin: string };
 type Datos = { nombres: string; apellidos: string; telefono: string; email: string; observaciones: string; consentimiento: boolean; sitio_web: string };
 type Confirmacion = { codigo: string; inicio: string; fin: string; estado: string; enlace: string; correo_enviado: boolean };
 
-const PASOS = ["Tratamiento", "Fecha", "Horario", "Sus datos", "Revisión"];
 const vacio: Datos = { nombres: "", apellidos: "", telefono: "", email: "", observaciones: "", consentimiento: false, sitio_web: "" };
 
 /**
@@ -16,6 +17,8 @@ const vacio: Datos = { nombres: "", apellidos: "", telefono: "", email: "", obse
  * La validación definitiva y el bloqueo de horarios ocurren en el servidor.
  */
 export function Reserva({ servicios, inicial, whatsapp, direccion }: { servicios: Svc[]; inicial?: string; whatsapp: string; direccion: string }) {
+  const t = useTextos();
+  const PASOS = lineas(t["ag.pasos"]);
   const preseleccion = servicios.find((s) => s.slug === inicial || s.id === inicial);
   const [paso, setPaso] = useState(preseleccion ? 1 : 0);
   const [svc, setSvc] = useState<Svc | undefined>(preseleccion);
@@ -92,7 +95,7 @@ export function Reserva({ servicios, inicial, whatsapp, direccion }: { servicios
   return (
     <div className="wizard">
       <ol className="wizard__steps" aria-label="Pasos de la reserva">
-        {PASOS.map((p, i) => (
+        {PASOS.slice(0, 5).map((p, i) => (
           <li key={p} className={`t-label ${i === paso ? "is-current" : ""} ${i < paso ? "is-done" : ""}`} aria-current={i === paso ? "step" : undefined}>
             {i < paso ? <button onClick={() => setPaso(i)}>{String(i + 1).padStart(2, "0")} {p}</button> : <span>{String(i + 1).padStart(2, "0")} {p}</span>}
           </li>
@@ -103,8 +106,8 @@ export function Reserva({ servicios, inicial, whatsapp, direccion }: { servicios
 
       {paso === 0 && (
         <fieldset className="form__group">
-          <legend className="t-title"><em>¿Qué tratamiento necesita?</em></legend>
-          <p className="t-body-s soft">Si no está seguro, elija la valoración.</p>
+          <legend className="t-title"><em>{t["ag.p1_titulo"]}</em></legend>
+          <p className="t-body-s soft">{t["ag.p1_ayuda"]}</p>
           <div className="options">
             {servicios.map((s) => (
               <button key={s.id} type="button" className={`option option--tall ${svc?.id === s.id ? "is-selected" : ""}`} aria-pressed={svc?.id === s.id}
@@ -119,8 +122,8 @@ export function Reserva({ servicios, inicial, whatsapp, direccion }: { servicios
 
       {paso === 1 && svc && (
         <div className="form__group">
-          <p className="t-title"><em>Elija el día</em></p>
-          <p className="t-body-s soft">{svc.nombre} · {svc.duracion} min. Los días marcados tienen horarios libres.</p>
+          <p className="t-title"><em>{t["ag.p2_titulo"]}</em></p>
+          <p className="t-body-s soft">{svc.nombre} · {svc.duracion} min. {t["ag.p2_ayuda"]}</p>
           <Calendario mes={mes} setMes={setMes} dias={dias} seleccion={fecha}
             elegir={(d) => { setFecha(d); setSlot(undefined); setPaso(2); }} />
         </div>
@@ -129,9 +132,9 @@ export function Reserva({ servicios, inicial, whatsapp, direccion }: { servicios
       {paso === 2 && fecha && (
         <div className="form__group">
           <p className="t-title"><em>{fechaLarga(`${fecha}T12:00:00-05:00`)}</em></p>
-          {slots === null && <p className="t-body soft" role="status">Consultando horarios…</p>}
+          {slots === null && <p className="t-body soft" role="status">{t["ag.consultando"]}</p>}
           {slots && slots.length === 0 && (
-            <p className="t-body soft">No quedan horarios este día. <button className="link" onClick={() => setPaso(1)}>Elegir otro día</button></p>
+            <p className="t-body soft">{t["ag.sin_horarios"]} <button className="link" onClick={() => setPaso(1)}>{t["ag.otro_dia"]}</button></p>
           )}
           {slots && slots.length > 0 && (
             <div className="slots" role="listbox" aria-label="Horarios disponibles">
@@ -149,60 +152,60 @@ export function Reserva({ servicios, inicial, whatsapp, direccion }: { servicios
 
       {paso === 3 && (
         <form className="form" noValidate onSubmit={(e) => { e.preventDefault(); if (validarDatos()) setPaso(4); }}>
-          <p className="t-title"><em>Sus datos de contacto</em></p>
-          <p className="t-body-s soft">Solo pedimos lo necesario para gestionar su cita. No escriba información médica.</p>
+          <p className="t-title"><em>{t["ag.p4_titulo"]}</em></p>
+          <p className="t-body-s soft">{t["ag.p4_ayuda"]}</p>
           <input type="text" name="sitio_web" tabIndex={-1} autoComplete="off" className="trampa" aria-hidden="true"
             value={datos.sitio_web} onChange={(e) => setDatos({ ...datos, sitio_web: e.target.value })} />
           <div className="form__row">
-            <Campo etiqueta="Nombres" error={errores.nombres}>
+            <Campo etiqueta={t["ag.nombres"]} error={errores.nombres}>
               <input value={datos.nombres} onChange={(e) => setDatos({ ...datos, nombres: e.target.value })} autoComplete="given-name" maxLength={80} required aria-invalid={!!errores.nombres} />
             </Campo>
-            <Campo etiqueta="Apellidos" error={errores.apellidos}>
+            <Campo etiqueta={t["ag.apellidos"]} error={errores.apellidos}>
               <input value={datos.apellidos} onChange={(e) => setDatos({ ...datos, apellidos: e.target.value })} autoComplete="family-name" maxLength={80} required aria-invalid={!!errores.apellidos} />
             </Campo>
           </div>
           <div className="form__row">
-            <Campo etiqueta="Teléfono" error={errores.telefono}>
+            <Campo etiqueta={t["ag.telefono"]} error={errores.telefono}>
               <input type="tel" inputMode="tel" value={datos.telefono} onChange={(e) => setDatos({ ...datos, telefono: e.target.value })} autoComplete="tel" placeholder="09XXXXXXXX" required aria-invalid={!!errores.telefono} />
             </Campo>
-            <Campo etiqueta="Correo electrónico" error={errores.email}>
+            <Campo etiqueta={t["ag.correo"]} error={errores.email}>
               <input type="email" inputMode="email" value={datos.email} onChange={(e) => setDatos({ ...datos, email: e.target.value })} autoComplete="email" required aria-invalid={!!errores.email} />
             </Campo>
           </div>
-          <Campo etiqueta="Observaciones (opcional)">
-            <textarea rows={3} maxLength={500} value={datos.observaciones} onChange={(e) => setDatos({ ...datos, observaciones: e.target.value })} placeholder="Por ejemplo: prefiero que me llamen por la tarde." />
+          <Campo etiqueta={t["ag.observaciones"]}>
+            <textarea rows={3} maxLength={500} value={datos.observaciones} onChange={(e) => setDatos({ ...datos, observaciones: e.target.value })} placeholder={t["ag.observaciones_ej"]} />
           </Campo>
           <label className="check t-body-s">
             <input type="checkbox" checked={datos.consentimiento} onChange={(e) => setDatos({ ...datos, consentimiento: e.target.checked })} aria-invalid={!!errores.consentimiento} />
-            <span>Acepto que mis datos se usen para gestionar esta cita, según la <Link href="/privacidad" target="_blank" className="underline">política de privacidad</Link>.</span>
+            <span>{t["ag.consentimiento"]} <Link href="/privacidad" target="_blank" className="underline">{t["ag.consentimiento_enlace"]}</Link>.</span>
           </label>
           {errores.consentimiento && <p className="t-caption field__error" role="alert">{errores.consentimiento}</p>}
-          <button className="cta t-button" type="submit"><span>Revisar</span><span aria-hidden="true">→</span></button>
+          <button className="cta t-button" type="submit"><span>{t["ag.revisar"]}</span><span aria-hidden="true">→</span></button>
         </form>
       )}
 
       {paso === 4 && svc && slot && (
         <div className="form__group">
-          <p className="t-title"><em>Revise su reserva</em></p>
+          <p className="t-title"><em>{t["ag.p5_titulo"]}</em></p>
           <div className="spec-table">
             {[
-              ["Tratamiento", svc.nombre],
-              ["Fecha", fechaLarga(slot.inicio)],
-              ["Hora", `${hora(slot.inicio)} – ${hora(slot.fin)}`],
-              ["Paciente", `${datos.nombres} ${datos.apellidos}`],
-              ["Teléfono", datos.telefono],
-              ["Correo", datos.email],
-              ...(datos.observaciones ? [["Observaciones", datos.observaciones]] : []),
-              ["Lugar", direccion],
+              [PASOS[0] ?? "Tratamiento", svc.nombre],
+              [PASOS[1] ?? "Fecha", fechaLarga(slot.inicio)],
+              [PASOS[2] ?? "Horario", `${hora(slot.inicio)} – ${hora(slot.fin)}`],
+              [t["ag.r_paciente"], `${datos.nombres} ${datos.apellidos}`],
+              [t["ag.telefono"], datos.telefono],
+              [t["ag.correo"], datos.email],
+              ...(datos.observaciones ? [[t["ag.r_observaciones"], datos.observaciones]] : []),
+              [t["ag.r_lugar"], direccion],
             ].map(([k, v]) => (
               <div className="spec-row in" key={k}><span className="t-label">{k}</span><span className="t-body-l soft">{v}</span></div>
             ))}
           </div>
           <div className="wizard__actions">
             <button className="cta cta--accent t-button" onClick={confirmar} disabled={cargando}>
-              <span>{cargando ? "Reservando…" : "Confirmar reserva"}</span><span aria-hidden="true">→</span>
+              <span>{cargando ? t["ag.reservando"] : t["ag.confirmar"]}</span><span aria-hidden="true">→</span>
             </button>
-            <button className="cta cta--ghost t-button" onClick={() => setPaso(3)} disabled={cargando}>Corregir datos</button>
+            <button className="cta cta--ghost t-button" onClick={() => setPaso(3)} disabled={cargando}>{t["ag.corregir"]}</button>
           </div>
         </div>
       )}
@@ -260,20 +263,21 @@ function Calendario({ mes, setMes, dias, seleccion, elegir }:
 }
 
 function ConfirmacionReserva({ ok, svc, direccion, whatsapp }: { ok: Confirmacion; svc: Svc; direccion: string; whatsapp: string }) {
+  const t = useTextos();
   return (
     <div className="confirm" role="status">
       <p className="t-label">Reserva registrada · código {ok.codigo}</p>
-      <h2 className="t-display">{ok.estado === "confirmada" ? "Su cita está confirmada." : "Recibimos su solicitud de cita."}</h2>
+      <h2 className="t-display">{ok.estado === "confirmada" ? t["ag.ok_confirmada"] : t["ag.ok_pendiente"]}</h2>
       <p className="t-body-l soft">
         {svc.nombre}, {fechaLarga(ok.inicio)} a las {hora(ok.inicio)}. {direccion}.
       </p>
-      {ok.estado !== "confirmada" && <p className="t-body soft">El consultorio revisará la solicitud y le confirmará por correo o WhatsApp.</p>}
+      {ok.estado !== "confirmada" && <p className="t-body soft">{t["ag.ok_revision"]}</p>}
       <p className="t-body soft">
-        {ok.correo_enviado ? "Le enviamos un correo con estos datos. " : ""}Guarde este enlace para reprogramar o cancelar:
+        {ok.correo_enviado ? `${t["ag.ok_correo"]} ` : ""}{t["ag.ok_enlace"]}
       </p>
       <p className="t-body confirm__link"><a href={ok.enlace}>{ok.enlace}</a></p>
       <div className="wizard__actions">
-        <Link className="cta t-button" href="/">Volver al inicio</Link>
+        <Link className="cta t-button" href="/">{t["ag.ok_volver"]}</Link>
         <a className="cta cta--ghost t-button" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </div>
     </div>

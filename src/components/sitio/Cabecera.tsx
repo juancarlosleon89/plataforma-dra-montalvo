@@ -3,17 +3,18 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo, NavLink } from "@/components/ui";
+import { useTextos } from "@/components/sitio/TextosContexto";
 
 const SECCIONES = [
-  { href: "/#nosotros", texto: "Nosotros" },
-  { href: "/#doctora", texto: "La doctora" },
-  { href: "/tratamientos", texto: "Tratamientos" },
-  { href: "/#resultados", texto: "Resultados" },
-  { href: "/#instalaciones", texto: "Instalaciones" },
-  { href: "/#preguntas", texto: "Preguntas" },
-  { href: "/#contacto", texto: "Ubicación y contacto" },
-  { href: "/agendar", texto: "Agendar cita" },
-];
+  { href: "/#nosotros", clave: "menu.nosotros" },
+  { href: "/#doctora", clave: "menu.doctora" },
+  { href: "/tratamientos", clave: "menu.tratamientos" },
+  { href: "/#resultados", clave: "menu.resultados" },
+  { href: "/#instalaciones", clave: "menu.instalaciones" },
+  { href: "/#preguntas", clave: "menu.preguntas" },
+  { href: "/#contacto", clave: "menu.contacto" },
+  { href: "/agendar", clave: "menu.agendar" },
+] as const;
 
 /** Cabecera fija: transparente, fondo papel al subir, se oculta al bajar. Mega-menú con velo. */
 export function Cabecera({ nombre, logo }: { nombre: string; logo?: string | null }) {
@@ -21,6 +22,7 @@ export function Cabecera({ nombre, logo }: { nombre: string; logo?: string | nul
   const [estado, setEstado] = useState({ conFondo: false, oculta: false });
   const ultimoY = useRef(0);
   const ruta = usePathname();
+  const t = useTextos();
   const abierto = menu === ruta; // al navegar, el menú se cierra solo
   const setAbierto = (v: boolean) => setMenu(v ? ruta : null);
 
@@ -49,33 +51,33 @@ export function Cabecera({ nombre, logo }: { nombre: string; logo?: string | nul
         <div className="header__left">
           <button className="menu-btn t-button" aria-expanded={abierto} aria-controls="megamenu" onClick={() => setAbierto(!abierto)}>
             <span className="menu-btn__dots" aria-hidden="true"><i /><i /><i /><i /></span>
-            <span>{abierto ? "Cerrar" : "Menú"}</span>
+            <span>{abierto ? t["cab.cerrar"] : t["cab.menu"]}</span>
           </button>
-          <NavLink href="/tratamientos" className="hide-sm">Tratamientos</NavLink>
+          <NavLink href="/tratamientos" className="hide-sm">{t["cab.tratamientos"]}</NavLink>
         </div>
         <Link className="wordmark" href="/" aria-label={`${nombre}, inicio`}>
           <Logo src={logo} className="wordmark__logo" />
           <span><span className="wordmark__pre">Dra.</span> {apellido}</span>
         </Link>
         <div className="header__right">
-          <NavLink href="/#contacto" className="hide-sm">Contacto</NavLink>
-          <Link className="cta cta--small t-button" href="/agendar">Agendar</Link>
+          <NavLink href="/#contacto" className="hide-sm">{t["cab.contacto"]}</NavLink>
+          <Link className="cta cta--small t-button" href="/agendar">{t["cab.agendar"]}</Link>
         </div>
       </header>
       {abierto && (
         <div className="megamenu" id="megamenu">
           <div className="megamenu__panel">
             <div className="megamenu__cards">
-              <Link className="megamenu__card" href="/tratamientos"><span className="t-label">Tratamientos</span>
+              <Link className="megamenu__card" href="/tratamientos"><span className="t-label">{t["menu.tarjeta1"]}</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/protesis-circonio-detalle.webp" alt="" width={432} height={220} /></Link>
-              <Link className="megamenu__card" href="/#instalaciones"><span className="t-label">Consultorio</span>
+                <img src={t["menu.tarjeta1_img"]} alt="" width={432} height={220} /></Link>
+              <Link className="megamenu__card" href="/#instalaciones"><span className="t-label">{t["menu.tarjeta2"]}</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/recepcion.webp" alt="" width={512} height={380} /></Link>
+                <img src={t["menu.tarjeta2_img"]} alt="" width={512} height={380} /></Link>
             </div>
             <nav className="megamenu__links" aria-label="Secciones">
               {SECCIONES.map((s) => (
-                <span key={s.href} onClick={() => setAbierto(false)}><NavLink href={s.href}>{s.texto}</NavLink></span>
+                <span key={s.href} onClick={() => setAbierto(false)}><NavLink href={s.href}>{t[s.clave]}</NavLink></span>
               ))}
             </nav>
           </div>

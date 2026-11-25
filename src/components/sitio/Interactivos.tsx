@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useTextos } from "@/components/sitio/TextosContexto";
+import { lineas } from "@/lib/textos";
 
 /** Manifiesto: cada palabra pasa de opacidad .15 a 1 según el avance del scroll. */
 export function RevelarPalabras({ texto }: { texto: string }) {
@@ -74,6 +76,7 @@ export function Galeria({ items }: { items: { id: string; imagen_url: string; ti
 
 /** Formulario de contacto: guarda el mensaje en Supabase vía /api/contacto. */
 export function FormularioContacto() {
+  const t = useTextos();
   const [estado, setEstado] = useState<{ tipo: "" | "ok" | "error"; texto: string }>({ tipo: "", texto: "" });
   const [enviando, setEnviando] = useState(false);
   async function enviar(e: React.FormEvent<HTMLFormElement>) {
@@ -85,24 +88,24 @@ export function FormularioContacto() {
     const r = await fetch("/api/contacto", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(datos) }).catch(() => null);
     const cuerpo = await r?.json().catch(() => ({}));
     setEnviando(false);
-    if (r?.ok) { form.reset(); setEstado({ tipo: "ok", texto: "Gracias. Recibimos su mensaje y le responderemos pronto." }); }
-    else setEstado({ tipo: "error", texto: cuerpo?.error ?? "No se pudo enviar. Escríbanos por WhatsApp." });
+    if (r?.ok) { form.reset(); setEstado({ tipo: "ok", texto: t["form.ok"] }); }
+    else setEstado({ tipo: "error", texto: cuerpo?.error ?? t["form.error"] });
   }
   return (
     <form className="form form--compact" onSubmit={enviar} noValidate>
-      <h3 className="t-title"><em>Escríbanos</em></h3>
+      <h3 className="t-title"><em>{t["form.titulo"]}</em></h3>
       <input type="text" name="sitio_web" tabIndex={-1} autoComplete="off" className="trampa" aria-hidden="true" />
       <div className="form__row">
-        <label className="field"><span className="t-label">Nombre</span><input name="nombre" autoComplete="name" required maxLength={120} /></label>
-        <label className="field"><span className="t-label">Teléfono</span><input name="telefono" type="tel" autoComplete="tel" required pattern="\+?[0-9 ()\-]{7,20}" /></label>
+        <label className="field"><span className="t-label">{t["form.nombre"]}</span><input name="nombre" autoComplete="name" required maxLength={120} /></label>
+        <label className="field"><span className="t-label">{t["form.telefono"]}</span><input name="telefono" type="tel" autoComplete="tel" required pattern="\+?[0-9 ()\-]{7,20}" /></label>
       </div>
       <div className="form__row">
-        <label className="field"><span className="t-label">Correo</span><input name="email" type="email" autoComplete="email" /></label>
-        <label className="field"><span className="t-label">Motivo</span>
-          <select name="motivo"><option>Información de tratamientos</option><option>Agendar o reprogramar</option><option>Otro</option></select></label>
+        <label className="field"><span className="t-label">{t["form.correo"]}</span><input name="email" type="email" autoComplete="email" /></label>
+        <label className="field"><span className="t-label">{t["form.motivo"]}</span>
+          <select name="motivo">{lineas(t["form.motivos"]).map((m) => <option key={m}>{m}</option>)}</select></label>
       </div>
-      <label className="field"><span className="t-label">Mensaje</span><textarea name="mensaje" rows={3} required maxLength={2000} /></label>
-      <button className="cta t-button" type="submit" disabled={enviando}>{enviando ? "Enviando…" : "Enviar mensaje"}</button>
+      <label className="field"><span className="t-label">{t["form.mensaje"]}</span><textarea name="mensaje" rows={3} required maxLength={2000} /></label>
+      <button className="cta t-button" type="submit" disabled={enviando}>{enviando ? t["form.enviando"] : t["form.enviar"]}</button>
       <p className={`t-body-s form__status ${estado.tipo === "error" ? "is-error" : ""}`} role="status" aria-live="polite">{estado.texto}</p>
     </form>
   );

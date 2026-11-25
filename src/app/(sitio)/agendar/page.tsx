@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Reserva } from "@/components/sitio/Reserva";
-import { obtenerServicios, obtenerSitio } from "@/lib/datos";
+import { obtenerServicios, obtenerSitio, obtenerTextos } from "@/lib/datos";
 import { enlaceWhatsapp } from "@/lib/formato";
 
 export const metadata: Metadata = {
@@ -11,15 +11,15 @@ export const metadata: Metadata = {
 
 export default async function Agendar({ searchParams }: PageProps<"/agendar">) {
   const { servicio } = await searchParams;
-  const [{ servicios }, { sitio, agenda }] = await Promise.all([obtenerServicios(), obtenerSitio()]);
+  const [{ servicios }, { sitio, agenda }, t] = await Promise.all([obtenerServicios(), obtenerSitio(), obtenerTextos()]);
   const reservables = servicios.filter((s) => s.reservable).map((s) => ({
     id: s.id, slug: s.slug, nombre: s.nombre, duracion: s.duracion_minutos, descripcion: s.descripcion,
   }));
   return (
     <section className="section page-top booking-page" aria-labelledby="agendar-title">
       <div className="booking-page__head">
-        <p className="t-label">Agenda en línea</p>
-        <h1 id="agendar-title" className="t-display">Agendar cita</h1>
+        <p className="t-label">{t["ag.rotulo"]}</p>
+        <h1 id="agendar-title" className="t-display">{t["ag.titulo"]}</h1>
         <p className="t-body soft">{agenda.politica_cancelacion}</p>
       </div>
       <Reserva

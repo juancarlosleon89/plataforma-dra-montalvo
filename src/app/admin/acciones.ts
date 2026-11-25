@@ -6,6 +6,7 @@ import { supabaseServicio, supabaseServidor } from "@/lib/supabase/server";
 import { avisarAppsScript } from "@/lib/servidor";
 import { env } from "@/lib/env";
 import { ENTIDADES, type NombreEntidad } from "./entidades";
+import { TEXTOS, type ClaveTexto } from "@/lib/textos";
 
 export type Resultado = { ok: boolean; mensaje: string } | null;
 const ok = (mensaje = "Cambios guardados.") => ({ ok: true, mensaje });
@@ -182,4 +183,31 @@ export async function cerrarSesion() {
   const sb = await supabaseServidor();
   await sb.auth.signOut();
   redirect("/admin/login");
+}
+
+
+/* ---------- Textos del sitio ---------- */
+/** Guarda los textos enviados. Un texto vacío o igual al original vuelve al valor por defecto. */
+export async function guardarTextos(_prev: Resultado, fd: FormData): Promise<Resultado> {
+  try {
+    const { sb } = await requerirPersonal("admin");
+    const cambiar: { id: string; valor: string; actualizado_en: string }[] = [];
+    const restaurar: string[] = [];
+    for (const [clave, bruto] of fd.entries()) {
+      if (!(clave in TEXTOS) || typeof bruto !== "string") continue;
+      const valor = bruto.replace(/\r\n/g, "\n").trim();
+      if (!valor || valor === TEXTOS[clave as ClaveTexto].v) restaurar.push(clave);
+      else cambiar.push({ id: clave, valor: valor.slice(0, 4000), actualizado_en: new Date().toISOString() });
+    }
+    if (cambiar.length) {
+      const { error } = await sb.from("textos_sitio").upsert(cambiar);
+      if (error) throw new Error(error.message);
+    }
+    if (restaurar.length) {
+      const { error } = await sb.from("textos_sitio").delete().in("id", restaurar);
+      if (error) throw new Error(error.message);
+    }
+    revalidatePath("/", "layout");
+    return ok("Textos guardados. Ya se ven en el sitio.");
+  } catch (e) { return fallo(e); }
 }

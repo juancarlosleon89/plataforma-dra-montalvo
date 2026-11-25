@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import { useTextos } from "@/components/sitio/TextosContexto";
 
 /** Subnavegación de categorías: oculta las tarjetas que no corresponden (sin recargar). */
 export function FiltroCategorias({ categorias }: { categorias: { id: string; nombre: string }[] }) {
+  const t = useTextos();
   const [activa, setActiva] = useState("todas");
   const elegir = (id: string) => {
     setActiva(id);
@@ -15,5 +17,5 @@ export function FiltroCategorias({ categorias }: { categorias: { id: string; nom
       <span>{nombre}</span><span aria-hidden="true">{nombre}</span>
     </button>
   );
-  return <nav className="subnav" aria-label="Categorías">{boton("todas", "Todos")}{categorias.map((c) => boton(c.id, c.nombre))}</nav>;
+  return <nav className="subnav" aria-label="Categorías">{boton("todas", t["trat.todos"])}{categorias.map((c) => boton(c.id, c.nombre))}</nav>;
 }

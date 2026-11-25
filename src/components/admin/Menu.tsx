@@ -10,6 +10,7 @@ const ITEMS: { href: string; texto: string; solo?: "admin" }[] = [
   { href: "/admin/mensajes", texto: "Mensajes" },
   { href: "/admin/servicios", texto: "Tratamientos", solo: "admin" },
   { href: "/admin/contenido", texto: "Galería y contenido", solo: "admin" },
+  { href: "/admin/textos", texto: "Textos del sitio", solo: "admin" },
   { href: "/admin/configuracion", texto: "Configuración", solo: "admin" },
   { href: "/admin/privacidad", texto: "Protección de datos" },
   { href: "/admin/usuarios", texto: "Usuarios", solo: "admin" },
