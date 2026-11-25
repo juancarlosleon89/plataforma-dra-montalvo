@@ -4,6 +4,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { supabaseNavegador } from "@/lib/supabase/navegador";
 
+
+function traducirError(m: string) {
+  if (/rate limit/i.test(m)) return "Se enviaron demasiados correos en poco tiempo. Espere unos minutos (hasta una hora) e inténtelo de nuevo.";
+  if (/same.*password|different from the old/i.test(m)) return "La nueva contraseña debe ser distinta de la anterior.";
+  if (/weak|at least/i.test(m)) return "La contraseña es demasiado débil: use al menos 8 caracteres con letras y números.";
+  if (/session|jwt|expired/i.test(m)) return "Su enlace expiró. Solicite uno nuevo con «¿Olvidó su contraseña?».";
+  return m;
+}
+
 function Marco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <main className="adm-auth">
@@ -55,7 +64,7 @@ export function FormularioRecuperar() {
     const { error } = await supabaseNavegador().auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/confirmar?siguiente=/admin/actualizar-clave`,
     });
-    if (error) setError(error.message); else setEnviado(true);
+    if (error) setError(traducirError(error.message)); else setEnviado(true);
   }
   return (
     <Marco titulo="Recuperar contraseña">
@@ -81,7 +90,7 @@ export function FormularioClave() {
     if (p1.length < 10) { setError("Use al menos 10 caracteres."); return; }
     if (p1 !== p2) { setError("Las contraseñas no coinciden."); return; }
     const { error } = await supabaseNavegador().auth.updateUser({ password: p1 });
-    if (error) { setError(error.message); return; }
+    if (error) { setError(traducirError(error.message)); return; }
     router.replace("/admin"); router.refresh();
   }
   return (
