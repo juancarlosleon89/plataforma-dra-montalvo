@@ -50,18 +50,22 @@ export default async function Inicio() {
 
       {/* Portada */}
       <section className="hero" aria-labelledby="hero-title">
-        <h1 id="hero-title" className="hero__wordmark">Monserrath<br />Montalvo</h1>
+        <h1 id="hero-title" className="sr-only">{sitio.nombre_comercial} · {sitio.especialidad} en Ambato</h1>
         <figure className="hero__figure">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={sitio.hero_imagen_url ?? "/img/doctora-bata.webp"} alt={`${sitio.nombre_comercial} en su consultorio`} width={288} height={512} fetchPriority="high" />
+          <img src={sitio.hero_imagen_url ?? "/img/doctora-bata.webp"} alt={`${sitio.nombre_comercial} en su consultorio`} width={1440} height={810} fetchPriority="high" />
         </figure>
         <div className="hero__copy">
-          <Rotulo>{sitio.especialidad} · Ambato</Rotulo>
-          <p className="hero__claim">{sitio.hero_titulo}</p>
-          <p className="t-body-s hero__sub">{sitio.hero_subtitulo}</p>
-          <div className="hero__ctas">
-            <Cta href="/agendar" variante="acento"><span>Agendar cita</span><span aria-hidden="true">→</span></Cta>
-            <Cta href={wa} variante="contorno" externo><span>Escribir por WhatsApp</span></Cta>
+          <div className="hero__intro">
+            <Rotulo>{sitio.especialidad} · Ambato</Rotulo>
+            <p className="hero__claim">{sitio.hero_titulo}</p>
+          </div>
+          <div className="hero__action">
+            <p className="t-body hero__sub">{sitio.hero_subtitulo}</p>
+            <div className="hero__ctas">
+              <Cta href="/agendar" variante="acento"><span>Agendar cita</span><span aria-hidden="true">→</span></Cta>
+              <Cta href={wa} variante="contorno" externo><span>Escribir por WhatsApp</span></Cta>
+            </div>
           </div>
         </div>
       </section>
@@ -84,20 +88,6 @@ export default async function Inicio() {
         )}
         {inst.valores.length > 0 && <p className="t-body soft">{inst.valores.join(" · ")}</p>}
       </section>
-
-      {inst.diferenciadores.length > 0 && (
-        <section className="section" aria-label="Diferenciadores">
-          <div className="specs">
-            {inst.diferenciadores.map((d, i) => (
-              <div className="specs__item in" key={d.titulo}>
-                <span className="t-label soft">0{i + 1}</span>
-                <h3 className="t-heading">{d.titulo}</h3>
-                <p className="t-body soft">{d.texto}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Doctora */}
       <section className="section doctor" id="doctora" aria-labelledby="doctora-title">
