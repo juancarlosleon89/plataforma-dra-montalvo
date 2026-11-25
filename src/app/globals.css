@@ -140,6 +140,11 @@ h1, h2, h3, p, figure, dl, dd, blockquote { margin: 0; }
 @supports (height: 1cap) {
   .wordmark__logo, .footer__logo { width: calc(1cap * 1.06); height: calc(1cap * 1.06); margin-bottom: calc(1cap * -.03); }
 }
+/* En la cabecera el logotipo va un 50 % más grande, centrado sobre la altura de las mayúsculas. */
+.wordmark__logo { width: calc(.7em * 1.59); height: calc(.7em * 1.59); margin-bottom: calc(.7em * -.295); }
+@supports (height: 1cap) {
+  .wordmark__logo { width: calc(1cap * 1.59); height: calc(1cap * 1.59); margin-bottom: calc(1cap * -.295); }
+}
 .footer__brand { display: flex; align-items: baseline; gap: .24em; }
 .menu-btn { display: inline-flex; align-items: center; gap: var(--space-8); height: 36px; padding: 0 var(--space-12); background: var(--color-ink); color: #fff; border-radius: var(--radius-lg); position: relative; }
 .menu-btn::after { content: ""; position: absolute; inset: -4px 0; } /* objetivo táctil ≥44px */
