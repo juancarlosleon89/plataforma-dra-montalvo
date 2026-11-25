@@ -1,5 +1,6 @@
 import { Cabecera } from "@/components/sitio/Cabecera";
 import { Pie } from "@/components/sitio/Pie";
+import { Movimiento } from "@/components/sitio/Movimiento";
 import { obtenerSitio } from "@/lib/datos";
 
 export const revalidate = 60;
@@ -15,6 +16,7 @@ export default async function SitioLayout({ children }: { children: React.ReactN
       <Cabecera nombre={sitio.nombre_comercial} />
       <main id="main">{children}</main>
       <Pie sitio={sitio} />
+      <Movimiento />
     </>
   );
 }

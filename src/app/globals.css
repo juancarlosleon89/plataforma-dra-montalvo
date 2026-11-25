@@ -177,7 +177,7 @@ h1, h2, h3, p, figure, dl, dd, blockquote { margin: 0; }
 
 /* ---------- Hero ---------- */
 .hero { position: relative; background: var(--color-hero-tint); padding-top: var(--header-height); }
-.hero__figure { margin: 0; width: 100%; }
+.hero__figure { margin: 0; width: 100%; overflow: hidden; }
 .hero__figure img { display: block; width: 100%; height: min(78svh, 56.25vw); min-height: 360px; object-fit: cover; object-position: center 22%; }
 .hero__copy { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-40); align-items: end; padding: var(--space-40) var(--grid-margin) var(--space-40); }
 .hero__intro, .hero__action { display: flex; flex-direction: column; gap: var(--space-16); }
@@ -344,6 +344,19 @@ h1, h2, h3, p, figure, dl, dd, blockquote { margin: 0; }
 .lightbox__close { display: block; margin: 0 0 var(--space-10) auto; color: var(--color-paper); padding: 10px 0; }
 
 /* ---------- Movimiento reducido ---------- */
+
+/* ---------- Movimiento al desplazarse (solo con JS y sin «reducir movimiento») ---------- */
+.mov .rv { opacity: 0; transform: translate3d(0, 36px, 0); transition: opacity 1s var(--ease-out-expo), transform 1.1s var(--ease-out-expo); transition-delay: calc(var(--rv-i, 0) * 90ms); will-change: opacity, transform; }
+.mov .rv.rv-in { opacity: 1; transform: none; }
+.mov .rv-img img { transform: scale(1.08); transition: transform 1.6s var(--ease-out-expo); transition-delay: calc(var(--rv-i, 0) * 90ms); }
+.mov .rv-img.rv-in img { transform: scale(1); }
+@media (hover: hover) and (pointer: fine) { .mov .card.rv-img.rv-in:hover .card__media img { transform: scale(1.03); } }
+.mov .hero__figure img { will-change: transform; }
+.mov .hero__figure img.hero-in { animation: hero-entrada 1.6s var(--ease-out-expo) both; }
+@keyframes hero-entrada { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: none; } }
+.mov main { animation: pagina-entrada .7s var(--ease-out-expo) both; }
+@keyframes pagina-entrada { from { opacity: 0; } to { opacity: 1; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   .specs__item::before, .spec-row::before { transform: scaleX(1); }
