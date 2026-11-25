@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { env } from "@/lib/env";
+import { EnlaceAuth } from "@/components/EnlaceAuth";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.sitioUrl),
@@ -28,7 +29,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Zalando+Sans:wght@400;500;600&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <EnlaceAuth />
+        {children}
+      </body>
     </html>
   );
 }
