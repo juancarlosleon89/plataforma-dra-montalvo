@@ -24,14 +24,17 @@ export function origenValido(req: NextRequest) {
 
 /** Límite de solicitudes por IP y acción (tabla en Supabase, compartida entre instancias). */
 export async function dentroDelLimite(req: NextRequest, accion: string, maximo: number, ventanaSeg: number) {
-  const { data, error } = await supabaseServicio().rpc("verificar_limite", {
+  let sb;
+  try { sb = supabaseServicio(); } catch (e) { console.error(`[limite] ${(e as Error).message}`); return true; }
+  const { data, error } = await sb.rpc("verificar_limite", {
     p_clave: `${accion}:${ipCliente(req)}`, p_maximo: maximo, p_ventana_segundos: ventanaSeg,
   });
-  if (error) return true; // si falla el contador no se bloquea al paciente; queda el resto de validaciones
+  if (error) { console.error(`[limite] ${error.message}`); return true; } // si falla el contador no se bloquea al paciente; queda el resto de validaciones
   return data === true;
 }
 
 export async function registrarError(origen: string, mensaje: string, detalle?: unknown) {
+  console.error(`[${origen}] ${mensaje}`);
   try {
     await supabaseServicio().from("registro_errores").insert({ origen, mensaje: mensaje.slice(0, 500), detalle: detalle ?? null });
   } catch {

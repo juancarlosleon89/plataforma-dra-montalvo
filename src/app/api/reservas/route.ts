@@ -22,7 +22,11 @@ export async function POST(req: NextRequest) {
   }
   if (p.data.sitio_web) return json({ error: "Solicitud no válida" }, 400);
 
-  const sb = supabaseServicio();
+  let sb;
+  try { sb = supabaseServicio(); } catch (e) {
+    console.error(`[api-reservas] ${(e as Error).message}`);
+    return json({ error: "La agenda en línea no está disponible en este momento. Escríbanos por WhatsApp." }, 503);
+  }
   const { data, error } = await sb.rpc("reservar_cita", {
     p_servicio: p.data.servicio_id,
     p_inicio: p.data.inicio,

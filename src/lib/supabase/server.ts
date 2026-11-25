@@ -34,6 +34,9 @@ export function supabasePublico() {
  */
 export function supabaseServicio() {
   if (!env.supabaseSecret) throw new Error("Falta SUPABASE_SECRET_KEY en el servidor.");
+  if (env.supabaseSecret.startsWith("sb_publishable_") || env.supabaseSecret === env.supabaseKey) {
+    throw new Error("SUPABASE_SECRET_KEY contiene la clave PUBLICABLE. Pegue en Vercel la clave secreta (sb_secret_…) de Supabase → Project Settings → API Keys.");
+  }
   return createPlainClient(env.supabaseUrl, env.supabaseSecret, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
