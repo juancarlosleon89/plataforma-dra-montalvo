@@ -12,6 +12,13 @@ export default async function Inicio() {
   const destacados = servicios.filter((s) => s.destacado).slice(0, 6);
   const horarios = resumenHorarios(contenido.horarios);
   const nombreServicio = (id: string | null) => servicios.find((s) => s.id === id)?.nombre;
+  const instagram = (sitio.instagram_publicaciones ?? [])
+    .map((u) => u.match(/instagram\.com\/(?:[\w.]+\/)?(p|reel|tv)\/([\w-]+)/))
+    .filter((m): m is RegExpMatchArray => !!m)
+    .map((m) => ({ tipo: m[1] === "tv" ? "p" : m[1], codigo: m[2] }))
+    .slice(0, 9);
+  const perfilInstagram = sitio.redes?.instagram || null;
+  const usuarioInstagram = perfilInstagram?.match(/instagram\.com\/([\w.]+)/)?.[1] ?? "instagram";
   const mapsQ = encodeURIComponent(sitio.maps_query ?? sitio.direccion ?? "");
 
   const perfilFilas = [
@@ -185,6 +192,30 @@ export default async function Inicio() {
         <p className="t-body soft">Los horarios se actualizan en tiempo real. Recibirá la confirmación por correo, con un enlace para reprogramar o cancelar.</p>
         <div><Cta href="/agendar"><span>Ver horarios disponibles</span><span aria-hidden="true">→</span></Cta></div>
       </section>
+
+      {/* Instagram */}
+      {(instagram.length > 0 || perfilInstagram) && (
+        <section className="section" id="instagram" aria-labelledby="instagram-title">
+          <div className="section__head">
+            <h2 id="instagram-title" className="t-display">Instagram</h2>
+            {perfilInstagram && <NavLink href={perfilInstagram} externo>{`@${usuarioInstagram} ↗`}</NavLink>}
+          </div>
+          {instagram.length > 0 && (
+            <div className="insta">
+              {instagram.map((p) => (
+                <div className="insta__item" key={p.codigo}>
+                  <iframe title={`Publicación de Instagram ${p.codigo}`} src={`https://www.instagram.com/${p.tipo}/${p.codigo}/embed/`} loading="lazy" scrolling="no" allowFullScreen />
+                </div>
+              ))}
+            </div>
+          )}
+          {perfilInstagram && (
+            <div className="center insta__cta">
+              <Cta href={perfilInstagram} externo variante="contorno"><span>Seguir en Instagram</span><span aria-hidden="true">↗</span></Cta>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Preguntas */}
       <section className="section faq" id="preguntas" aria-labelledby="faq-title">

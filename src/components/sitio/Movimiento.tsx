@@ -15,11 +15,11 @@ const OBJETIVOS = [
   "main section > .t-label", "main section > h1", "main section > h2", "main section > p",
   ".section__head", ".narrow > *", ".hero__intro > *", ".hero__action > *",
   ".statement p", ".doctor__media", ".doctor__info > *",
-  ".cards > *", ".cases > *", ".gallery > *", ".feature__media", ".feature > div > *",
+  ".cards > *", ".cases > *", ".gallery > *", ".insta > *", ".insta__cta", ".feature__media", ".feature > div > *",
   ".faq__item", ".location > *", ".spec-table__row", ".specs__item",
   ".booking-page__head > *", ".footer__top > *", ".footer__links > *",
 ].join(",");
-const GRUPOS = ".cards, .cases, .gallery, .hero__copy, .doctor__info, .narrow, .faq, .location, .spec-table, .footer";
+const GRUPOS = ".cards, .insta, .cases, .gallery, .hero__copy, .doctor__info, .narrow, .faq, .location, .spec-table, .footer";
 
 export function Movimiento() {
   const ruta = usePathname();

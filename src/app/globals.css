@@ -316,6 +316,14 @@ h1, h2, h3, p, figure, dl, dd, blockquote { margin: 0; }
 }
 
 /* ---------- Ubicación ---------- */
+/* ---------- Instagram ---------- */
+.insta { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--grid-gutter); }
+.insta__item { background: var(--color-product-bg); border-radius: var(--radius-md); overflow: hidden; height: 640px; }
+.insta__item iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
+.insta__cta { margin-top: var(--space-40); display: flex; justify-content: center; }
+@media (max-width: 1023px) { .insta { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 599px) { .insta { grid-template-columns: 1fr; } .insta__item { height: 600px; } }
+
 .location { display: grid; grid-template-columns: 1fr 1fr; gap: calc(67 * var(--vr)); align-items: start; }
 .location__map { position: sticky; top: var(--header-height); height: calc(100svh - var(--header-height) - var(--space-40)); background: var(--color-product-bg); }
 .location__map iframe { width: 100%; height: 100%; border: 0; filter: grayscale(1) contrast(.95); }

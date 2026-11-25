@@ -14,7 +14,7 @@ export interface ConfiguracionSitio {
   nombre_comercial: string; especialidad: string | null; logotipo_url: string | null; color_acento: string;
   telefono: string | null; email: string | null; whatsapp_url: string | null; whatsapp_numero: string | null;
   mensaje_whatsapp: string | null; direccion: string | null; referencias: string | null; ciudad: string | null;
-  maps_query: string | null; redes: Record<string, string>; hero_titulo: string | null; hero_subtitulo: string | null;
+  maps_query: string | null; redes: Record<string, string>; hero_titulo: string | null; hero_subtitulo: string | null; instagram_publicaciones: string[];
   hero_imagen_url: string | null;
 }
 

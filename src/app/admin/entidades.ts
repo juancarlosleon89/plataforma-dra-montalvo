@@ -85,6 +85,7 @@ export const ENTIDADES = {
       { nombre: "redes", etiqueta: "Redes sociales (JSON)", tipo: "json", ancho: "completo", ayuda: '{"instagram":"https://…","facebook":"https://…"}' },
       { nombre: "hero_titulo", etiqueta: "Portada: frase principal", tipo: "texto", ancho: "completo" },
       { nombre: "hero_subtitulo", etiqueta: "Portada: texto de apoyo", tipo: "area", ancho: "completo" },
+      { nombre: "instagram_publicaciones", etiqueta: "Instagram: publicaciones del inicio (un enlace por línea)", tipo: "lista", ancho: "completo", ayuda: "Copie el enlace de cada publicación o reel (… → Copiar enlace). Se recomiendan 3 o 6. Déjelo vacío para mostrar solo el botón al perfil." },
       { nombre: "hero_imagen_url", etiqueta: "Portada: fotografía", tipo: "imagen", ancho: "completo" },
     ],
   },
