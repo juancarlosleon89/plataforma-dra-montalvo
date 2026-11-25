@@ -12,7 +12,7 @@ const AUT = [{ valor: "pendiente", texto: "Pendiente" }, { valor: "otorgada", te
 
 export const ENTIDADES = {
   servicios: {
-    tabla: "servicios", rol: "admin", revalidar: ["/", "/tratamientos", "/agendar"], orden: "orden",
+    tabla: "servicios", rol: "admin", revalidar: ["/", "/agendar"], orden: "orden",
     campos: [
       { nombre: "nombre", etiqueta: "Nombre", tipo: "texto", requerido: true },
       { nombre: "slug", etiqueta: "Dirección web (minúsculas y guiones)", tipo: "texto", requerido: true, ayuda: "Ej.: diseno-de-sonrisa → /tratamientos/diseno-de-sonrisa" },
@@ -32,7 +32,7 @@ export const ENTIDADES = {
     ],
   },
   categorias: {
-    tabla: "categorias_tratamiento", rol: "admin", revalidar: ["/tratamientos"], orden: "orden",
+    tabla: "categorias_tratamiento", rol: "admin", revalidar: ["/"], orden: "orden",
     campos: [{ nombre: "nombre", etiqueta: "Nombre", tipo: "texto", requerido: true }, { nombre: "orden", etiqueta: "Orden", tipo: "numero" }, SI_NO("activa", "Activa")],
   },
   horarios: {
@@ -67,7 +67,7 @@ export const ENTIDADES = {
     ],
   },
   sitio: {
-    tabla: "configuracion_sitio", rol: "admin", unico: true, revalidar: ["/", "/tratamientos", "/agendar", "/privacidad"],
+    tabla: "configuracion_sitio", rol: "admin", unico: true, revalidar: ["/", "/agendar", "/privacidad"],
     campos: [
       { nombre: "nombre_comercial", etiqueta: "Nombre comercial", tipo: "texto", requerido: true },
       { nombre: "especialidad", etiqueta: "Especialidad (subtítulo)", tipo: "texto" },

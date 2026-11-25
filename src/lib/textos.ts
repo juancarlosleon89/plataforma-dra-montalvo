@@ -9,7 +9,6 @@ export const TEXTOS = {
   /* Cabecera y menú */
   "cab.menu": { g: "Cabecera y menú", e: "Botón del menú", v: "Menú" },
   "cab.cerrar": { g: "Cabecera y menú", e: "Botón del menú abierto", v: "Cerrar" },
-  "cab.tratamientos": { g: "Cabecera y menú", e: "Enlace superior izquierdo", v: "Tratamientos" },
   "cab.contacto": { g: "Cabecera y menú", e: "Enlace superior derecho", v: "Contacto" },
   "cab.agendar": { g: "Cabecera y menú", e: "Botón superior derecho", v: "Agendar" },
   "menu.tarjeta1": { g: "Cabecera y menú", e: "Menú: tarjeta 1, título", v: "Tratamientos" },
@@ -41,7 +40,6 @@ export const TEXTOS = {
   "perfil.certificaciones": { g: "Inicio · Perfil de la doctora", e: "Fila: certificaciones", v: "Certificaciones" },
   "perfil.cursos": { g: "Inicio · Perfil de la doctora", e: "Fila: cursos", v: "Cursos" },
   "inicio.tratamientos_titulo": { g: "Inicio · Tratamientos", e: "Título", v: "Tratamientos" },
-  "inicio.ver_todos": { g: "Inicio · Tratamientos", e: "Enlace a todos", v: "Ver todos" },
   "tarjeta.destacado": { g: "Inicio · Tratamientos", e: "Etiqueta de tratamiento destacado", v: "Destacado" },
   "tarjeta.agendar": { g: "Inicio · Tratamientos", e: "Botón de la tarjeta", v: "Agendar" },
   "tarjeta.informacion": { g: "Inicio · Tratamientos", e: "Enlace de la tarjeta", v: "Solicitar información" },
@@ -97,8 +95,6 @@ export const TEXTOS = {
   "pie.administracion": { g: "Pie de página", e: "Enlace al panel", v: "Administración" },
 
   /* Tratamientos */
-  "trat.titulo": { g: "Página de tratamientos", e: "Título", v: "Tratamientos" },
-  "trat.todos": { g: "Página de tratamientos", e: "Filtro de todas las categorías", v: "Todos" },
   "det.ruta": { g: "Detalle de un tratamiento", e: "Enlace de regreso", v: "Tratamientos" },
   "det.nota": { g: "Detalle de un tratamiento", e: "Nota bajo el título", v: "La valoración define si este tratamiento es adecuado para su caso." },
   "det.agendar": { g: "Detalle de un tratamiento", e: "Botón principal", v: "Agendar cita" },

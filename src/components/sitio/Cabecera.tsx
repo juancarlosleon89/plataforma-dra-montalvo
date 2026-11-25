@@ -8,7 +8,7 @@ import { useTextos } from "@/components/sitio/TextosContexto";
 const SECCIONES = [
   { href: "/#nosotros", clave: "menu.nosotros" },
   { href: "/#doctora", clave: "menu.doctora" },
-  { href: "/tratamientos", clave: "menu.tratamientos" },
+  { href: "/#servicios", clave: "menu.tratamientos" },
   { href: "/#resultados", clave: "menu.resultados" },
   { href: "/#instalaciones", clave: "menu.instalaciones" },
   { href: "/#preguntas", clave: "menu.preguntas" },
@@ -53,7 +53,6 @@ export function Cabecera({ nombre, logo }: { nombre: string; logo?: string | nul
             <span className="menu-btn__dots" aria-hidden="true"><i /><i /><i /><i /></span>
             <span>{abierto ? t["cab.cerrar"] : t["cab.menu"]}</span>
           </button>
-          <NavLink href="/tratamientos" className="hide-sm">{t["cab.tratamientos"]}</NavLink>
         </div>
         <Link className="wordmark" href="/" aria-label={`${nombre}, inicio`}>
           <Logo src={logo} className="wordmark__logo" />
@@ -68,7 +67,7 @@ export function Cabecera({ nombre, logo }: { nombre: string; logo?: string | nul
         <div className="megamenu" id="megamenu">
           <div className="megamenu__panel">
             <div className="megamenu__cards">
-              <Link className="megamenu__card" href="/tratamientos"><span className="t-label">{t["menu.tarjeta1"]}</span>
+              <Link className="megamenu__card" href="/#servicios"><span className="t-label">{t["menu.tarjeta1"]}</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={t["menu.tarjeta1_img"]} alt="" width={432} height={220} /></Link>
               <Link className="megamenu__card" href="/#instalaciones"><span className="t-label">{t["menu.tarjeta2"]}</span>

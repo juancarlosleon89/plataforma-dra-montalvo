@@ -9,7 +9,6 @@ import { env } from "@/lib/env";
 export default async function Inicio() {
   const [{ sitio, inst }, { servicios }, contenido, t] = await Promise.all([obtenerSitio(), obtenerServicios(), obtenerContenido(), obtenerTextos()]);
   const wa = enlaceWhatsapp(sitio);
-  const destacados = servicios.filter((s) => s.destacado).slice(0, 6);
   const horarios = resumenHorarios(contenido.horarios);
   const nombreServicio = (id: string | null) => servicios.find((s) => s.id === id)?.nombre;
   const instagram = (sitio.instagram_publicaciones ?? [])
@@ -115,9 +114,8 @@ export default async function Inicio() {
       <section className="section" id="servicios" aria-labelledby="servicios-title">
         <div className="section__head">
           <h2 id="servicios-title" className="t-display">{t["inicio.tratamientos_titulo"]} <sup className="t-label">{servicios.length}</sup></h2>
-          <NavLink href="/tratamientos">{t["inicio.ver_todos"]}</NavLink>
         </div>
-        <div className="cards">{destacados.map((s) => <TarjetaServicio key={s.id} s={s} wa={wa} tx={t} />)}</div>
+        <div className="cards">{servicios.map((s) => <TarjetaServicio key={s.id} s={s} wa={wa} tx={t} />)}</div>
       </section>
 
       {/* Resultados */}

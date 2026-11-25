@@ -17,7 +17,7 @@ export function Pie({ sitio, tx: t }: { sitio: ConfiguracionSitio; tx: Textos })
           <div><p className="t-label dim">{t["pie.consultorio"]}</p>
             <NavLink href="/#nosotros">{t["menu.nosotros"]}</NavLink><NavLink href="/#doctora">{t["menu.doctora"]}</NavLink><NavLink href="/#instalaciones">{t["menu.instalaciones"]}</NavLink></div>
           <div><p className="t-label dim">{t["pie.pacientes"]}</p>
-            <NavLink href="/tratamientos">{t["menu.tratamientos"]}</NavLink><NavLink href="/agendar">{t["pie.agendar"]}</NavLink><NavLink href="/privacidad">{t["pie.privacidad"]}</NavLink></div>
+            <NavLink href="/#servicios">{t["menu.tratamientos"]}</NavLink><NavLink href="/agendar">{t["pie.agendar"]}</NavLink><NavLink href="/privacidad">{t["pie.privacidad"]}</NavLink></div>
           <div><p className="t-label dim">{t["pie.redes"]}</p>
             {Object.entries(sitio.redes ?? {}).filter(([, u]) => u).map(([red, url]) => (
               <NavLink key={red} href={url} externo>{red.charAt(0).toUpperCase() + red.slice(1)}</NavLink>

@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: supabaseHost, pathname: "/storage/v1/object/public/**" }],
   },
+  async redirects() {
+    // La página con el listado de tratamientos se retiró: los tratamientos se muestran en el inicio.
+    return [{ source: "/tratamientos", destination: "/#servicios", permanent: true }];
+  },
   async headers() {
     return [{ source: "/:path*", headers: seguridad }];
   },

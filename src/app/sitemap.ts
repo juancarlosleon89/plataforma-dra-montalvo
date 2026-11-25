@@ -5,7 +5,7 @@ import { obtenerServicios } from "@/lib/datos";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base: MetadataRoute.Sitemap = ["", "/tratamientos", "/agendar", "/privacidad"].map((r) => ({
+  const base: MetadataRoute.Sitemap = ["", "/agendar", "/privacidad"].map((r) => ({
     url: `${env.sitioUrl}${r}`, changeFrequency: "weekly", priority: r === "" ? 1 : 0.7,
   }));
   try {

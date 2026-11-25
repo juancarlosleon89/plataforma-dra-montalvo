@@ -6,7 +6,7 @@ test.use({ extraHTTPHeaders: { "X-Forwarded-For": `10.2.${Math.floor(Math.random
 
 /** Pruebas de seguridad y concurrencia sobre la API pública. */
 async function primerHorario(request: import("@playwright/test").APIRequestContext) {
-  const html = await (await request.get("/tratamientos")).text();
+  const html = await (await request.get("/")).text();
   void html;
   // El id del servicio se obtiene de la página de agendar (Reserva recibe los servicios)
   const pagina = await (await request.get("/agendar")).text();

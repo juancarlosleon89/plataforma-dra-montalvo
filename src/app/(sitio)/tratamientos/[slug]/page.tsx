@@ -42,7 +42,7 @@ export default async function FichaTratamiento({ params }: PageProps<"/tratamien
           : <span className="card__mono" aria-hidden="true">{s.nombre.charAt(0)}</span>}
       </div>
       <div className="pdp__info">
-        <nav aria-label="Ruta" className="pdp__crumbs"><NavLink href="/tratamientos">{t["det.ruta"]}</NavLink></nav>
+        <nav aria-label="Ruta" className="pdp__crumbs"><NavLink href="/#servicios">{t["det.ruta"]}</NavLink></nav>
         <h1 id="pdp-title" className="t-display">{s.nombre} {s.destacado && <Tag>{t["tarjeta.destacado"]}</Tag>}</h1>
         {s.descripcion && <p className="t-body-l soft">{s.descripcion}</p>}
         <SpecTable filas={filas} />
