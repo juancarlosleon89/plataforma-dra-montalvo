@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { NavLink } from "@/components/ui";
+import { Logo, NavLink } from "@/components/ui";
 
 const SECCIONES = [
   { href: "/#nosotros", texto: "Nosotros" },
@@ -16,7 +16,7 @@ const SECCIONES = [
 ];
 
 /** Cabecera fija: transparente, fondo papel al subir, se oculta al bajar. Mega-menú con velo. */
-export function Cabecera({ nombre }: { nombre: string }) {
+export function Cabecera({ nombre, logo }: { nombre: string; logo?: string | null }) {
   const [menu, setMenu] = useState<string | null>(null); // ruta en la que se abrió el menú
   const [estado, setEstado] = useState({ conFondo: false, oculta: false });
   const ultimoY = useRef(0);
@@ -54,7 +54,8 @@ export function Cabecera({ nombre }: { nombre: string }) {
           <NavLink href="/tratamientos" className="hide-sm">Tratamientos</NavLink>
         </div>
         <Link className="wordmark" href="/" aria-label={`${nombre}, inicio`}>
-          <span className="wordmark__pre">Dra.</span> {apellido}
+          <Logo src={logo} className="wordmark__logo" />
+          <span><span className="wordmark__pre">Dra.</span> {apellido}</span>
         </Link>
         <div className="header__right">
           <NavLink href="/#contacto" className="hide-sm">Contacto</NavLink>

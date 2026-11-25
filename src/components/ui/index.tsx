@@ -83,3 +83,10 @@ export function IconoWhatsapp({ size = 22 }: { size?: number }) {
     </svg>
   );
 }
+
+
+/** Logotipo pintado con el color del texto que lo rodea (máscara CSS sobre la imagen con transparencia). */
+export function Logo({ src, className = "" }: { src: string | null | undefined; className?: string }) {
+  if (!src) return null;
+  return <span className={`logo ${className}`} aria-hidden="true" style={{ "--logo": `url("${src.replace(/"/g, "%22")}")` } as React.CSSProperties} />;
+}

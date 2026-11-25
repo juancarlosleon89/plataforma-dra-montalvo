@@ -13,7 +13,7 @@ export default async function SitioLayout({ children }: { children: React.ReactN
     <>
       <style>{`:root{--color-accent:${acento}}`}</style>
       <a className="skip t-label" href="#main">Saltar al contenido</a>
-      <Cabecera nombre={sitio.nombre_comercial} />
+      <Cabecera nombre={sitio.nombre_comercial} logo={sitio.logotipo_url} />
       <main id="main">{children}</main>
       <Pie sitio={sitio} />
       <Movimiento />

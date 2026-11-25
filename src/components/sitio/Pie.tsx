@@ -1,4 +1,4 @@
-import { NavLink, IconoWhatsapp } from "@/components/ui";
+import { Logo, NavLink, IconoWhatsapp } from "@/components/ui";
 import type { ConfiguracionSitio } from "@/lib/tipos";
 import { enlaceWhatsapp } from "@/lib/formato";
 
@@ -9,7 +9,7 @@ export function Pie({ sitio }: { sitio: ConfiguracionSitio }) {
     <>
       <footer className="footer">
         <div className="footer__top">
-          <p className="footer__brand">{apellido}</p>
+          <p className="footer__brand"><Logo src={sitio.logotipo_url} className="footer__logo" />{apellido}</p>
           <p className="t-body-s">{sitio.especialidad}<br />{sitio.direccion}{sitio.ciudad ? `, ${sitio.ciudad}` : ""}</p>
         </div>
         <div className="footer__links">
