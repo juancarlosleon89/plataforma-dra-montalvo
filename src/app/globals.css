@@ -132,11 +132,15 @@ h1, h2, h3, p, figure, dl, dd, blockquote { margin: 0; }
 .header__right { justify-content: flex-end; }
 .wordmark { font: 400 clamp(17px, calc(20 * var(--vr)), 22px)/1 var(--font-serif); letter-spacing: -.01em; white-space: nowrap; }
 .wordmark__pre { font-style: italic; }
-.wordmark { display: inline-flex; align-items: center; gap: .45em; }
+.wordmark { display: inline-flex; align-items: baseline; gap: .38em; }
 .logo { display: inline-block; flex: none; background-color: currentColor; -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat; }
-.wordmark__logo { width: 1.75em; height: 1.75em; }
-.footer__brand { display: flex; align-items: center; gap: .22em; }
-.footer__logo { width: .82em; height: .82em; }
+/* El logotipo ocupa exactamente la altura de las mayúsculas y se apoya en la línea base del texto
+   (su PNG trae ~3 % de margen transparente, de ahí el 1.06 y el margen negativo). */
+.wordmark__logo, .footer__logo { width: calc(.7em * 1.06); height: calc(.7em * 1.06); margin-bottom: calc(.7em * -.03); }
+@supports (height: 1cap) {
+  .wordmark__logo, .footer__logo { width: calc(1cap * 1.06); height: calc(1cap * 1.06); margin-bottom: calc(1cap * -.03); }
+}
+.footer__brand { display: flex; align-items: baseline; gap: .24em; }
 .menu-btn { display: inline-flex; align-items: center; gap: var(--space-8); height: 36px; padding: 0 var(--space-12); background: var(--color-ink); color: #fff; border-radius: var(--radius-lg); position: relative; }
 .menu-btn::after { content: ""; position: absolute; inset: -4px 0; } /* objetivo táctil ≥44px */
 @media (max-width: 599px) { .wordmark { font-size: 17px; } .wordmark__pre { display: none; } .header { padding-inline: 12px; } }
