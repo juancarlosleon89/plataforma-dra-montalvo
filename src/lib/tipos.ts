@@ -15,6 +15,8 @@ export interface ConfiguracionSitio {
   telefono: string | null; email: string | null; whatsapp_url: string | null; whatsapp_numero: string | null;
   mensaje_whatsapp: string | null; direccion: string | null; referencias: string | null; ciudad: string | null;
   maps_query: string | null; redes: Record<string, string>; hero_titulo: string | null; hero_subtitulo: string | null; instagram_publicaciones: string[];
+  destacado_visible: boolean; destacado_imagen_url: string | null; destacado_rotulo: string | null; destacado_titulo: string | null;
+  destacado_texto: string | null; destacado_boton_texto: string | null; destacado_boton_enlace: string | null;
   hero_imagen_url: string | null;
 }
 

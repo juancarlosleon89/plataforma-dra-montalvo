@@ -143,19 +143,25 @@ export default async function Inicio() {
         )}
       </section>
 
-      {/* Pieza destacada */}
-      <section className="section feature" aria-labelledby="feature-title">
-        <figure className="feature__media">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/img/protesis-circonio-detalle.webp" alt="Prótesis dental fija de circonio" width={432} height={220} loading="lazy" />
-        </figure>
-        <div className="narrow center">
-          <Rotulo>Materiales</Rotulo>
-          <h2 id="feature-title" className="t-heading">Prótesis de circonio: resistencia y un aspecto natural.</h2>
-          <p className="t-body soft">El circonio permite restauraciones fijas resistentes y de color similar al diente natural. La valoración define si es la opción adecuada para cada caso.</p>
-          <Cta href="/agendar?servicio=valoracion"><span>Agendar valoración</span></Cta>
-        </div>
-      </section>
+      {/* Sección destacada (editable en Configuración) */}
+      {sitio.destacado_visible !== false && sitio.destacado_titulo && (
+        <section className="section feature" aria-labelledby="feature-title">
+          {sitio.destacado_imagen_url && (
+            <figure className="feature__media">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={sitio.destacado_imagen_url} alt={sitio.destacado_titulo} loading="lazy" />
+            </figure>
+          )}
+          <div className="narrow center">
+            {sitio.destacado_rotulo && <Rotulo>{sitio.destacado_rotulo}</Rotulo>}
+            <h2 id="feature-title" className="t-heading">{sitio.destacado_titulo}</h2>
+            {sitio.destacado_texto && <p className="t-body soft">{sitio.destacado_texto}</p>}
+            {sitio.destacado_boton_texto && (
+              <Cta href={sitio.destacado_boton_enlace || "/agendar"} externo={/^https?:/.test(sitio.destacado_boton_enlace ?? "")}><span>{sitio.destacado_boton_texto}</span></Cta>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Instalaciones */}
       <section className="section" id="instalaciones" aria-labelledby="instalaciones-title">

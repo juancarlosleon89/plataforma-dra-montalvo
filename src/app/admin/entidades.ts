@@ -87,6 +87,13 @@ export const ENTIDADES = {
       { nombre: "hero_subtitulo", etiqueta: "Portada: texto de apoyo", tipo: "area", ancho: "completo" },
       { nombre: "instagram_publicaciones", etiqueta: "Instagram: publicaciones del inicio (un enlace por línea)", tipo: "lista", ancho: "completo", ayuda: "Copie el enlace de cada publicación o reel (… → Copiar enlace). Se recomiendan 3 o 6. Déjelo vacío para mostrar solo el botón al perfil." },
       { nombre: "hero_imagen_url", etiqueta: "Portada: fotografía", tipo: "imagen", ancho: "completo" },
+      SI_NO("destacado_visible", "Sección destacada (antes de «El consultorio»): mostrar"),
+      { nombre: "destacado_imagen_url", etiqueta: "Sección destacada: imagen", tipo: "imagen", ancho: "completo" },
+      { nombre: "destacado_rotulo", etiqueta: "Sección destacada: rótulo pequeño", tipo: "texto", ayuda: "Ej.: Materiales" },
+      { nombre: "destacado_titulo", etiqueta: "Sección destacada: título", tipo: "texto", ancho: "completo" },
+      { nombre: "destacado_texto", etiqueta: "Sección destacada: texto", tipo: "area", ancho: "completo" },
+      { nombre: "destacado_boton_texto", etiqueta: "Sección destacada: texto del botón", tipo: "texto", ayuda: "Déjelo vacío para ocultar el botón." },
+      { nombre: "destacado_boton_enlace", etiqueta: "Sección destacada: enlace del botón", tipo: "texto", ayuda: "Ej.: /agendar?servicio=valoracion o /tratamientos/protesis-fijas" },
     ],
   },
   institucional: {
