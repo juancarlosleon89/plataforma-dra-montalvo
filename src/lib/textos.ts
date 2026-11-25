@@ -26,7 +26,6 @@ export const TEXTOS = {
   "menu.agendar": { g: "Cabecera y menú", e: "Menú y pie: Agendar", v: "Agendar cita" },
 
   /* Inicio */
-  "inicio.rotulo": { g: "Inicio · Portada", e: "Rótulo sobre la frase principal ({especialidad} se reemplaza por la especialidad de Configuración)", v: "{especialidad} · Ambato" },
   "inicio.boton_agendar": { g: "Inicio · Portada", e: "Botón principal", v: "Agendar cita" },
   "inicio.boton_whatsapp": { g: "Inicio · Portada", e: "Botón secundario", v: "Escribir por WhatsApp" },
   "inicio.frase": { g: "Inicio · Frase entre bloques", e: "Frase después de la portada", v: "Escuchar primero. Explicar cada opción. Tratar solo cuando el plan está claro y el paciente lo entiende.", tipo: "area" },

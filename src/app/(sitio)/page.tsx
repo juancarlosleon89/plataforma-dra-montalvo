@@ -64,7 +64,6 @@ export default async function Inicio() {
         </figure>
         <div className="hero__copy">
           <div className="hero__intro">
-            <Rotulo>{t["inicio.rotulo"].replace("{especialidad}", sitio.especialidad ?? "")}</Rotulo>
             <p className="hero__claim">{sitio.hero_titulo}</p>
           </div>
           <div className="hero__action">
