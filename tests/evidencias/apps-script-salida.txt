@@ -1,0 +1,15 @@
+OK    Crear: la cita nueva genera un evento etiquetado y devuelve su ID
+OK    El evento no incluye apellidos completos ni datos clínicos en el título
+OK    Actualizar: reprogramar mueve el mismo evento y avisa al paciente
+OK    Cancelar: elimina el evento y envía correo de cancelación
+OK    Idempotencia: si el evento fue borrado a mano, se vuelve a crear
+OK    Error de Calendar: se informa a Supabase para reintentar (sin perder la cita)
+OK    Ocupados: solo se envían eventos ajenos a la plataforma
+Reconciliación: 1 corrección(es)
+OK    Reconciliación: evento movido a mano → se reencola 'actualizar' (Supabase manda)
+Reconciliación: 1 corrección(es)
+OK    Reconciliación: evento huérfano de la plataforma se elimina
+OK    Webhook: secreto incorrecto → rechazado
+OK    Webhook: reserva válida → correo al paciente con enlace y aviso a la doctora
+
+11/11 pruebas de Apps Script superadas

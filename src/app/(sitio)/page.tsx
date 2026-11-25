@@ -1,0 +1,224 @@
+import Link from "next/link";
+import { Acordeon, Cta, NavLink, Rotulo, SpecTable } from "@/components/ui";
+import { Comparador, FormularioContacto, Galeria, RevelarPalabras } from "@/components/sitio/Interactivos";
+import { TarjetaServicio } from "@/components/sitio/TarjetaServicio";
+import { obtenerContenido, obtenerServicios, obtenerSitio, resumenHorarios } from "@/lib/datos";
+import { enlaceWhatsapp } from "@/lib/formato";
+import { env } from "@/lib/env";
+
+export default async function Inicio() {
+  const [{ sitio, inst }, { servicios }, contenido] = await Promise.all([obtenerSitio(), obtenerServicios(), obtenerContenido()]);
+  const wa = enlaceWhatsapp(sitio);
+  const destacados = servicios.filter((s) => s.destacado).slice(0, 6);
+  const horarios = resumenHorarios(contenido.horarios);
+  const nombreServicio = (id: string | null) => servicios.find((s) => s.id === id)?.nombre;
+  const mapsQ = encodeURIComponent(sitio.maps_query ?? sitio.direccion ?? "");
+
+  const perfilFilas = [
+    inst.perfil_especialidades.length > 0 && { etiqueta: "Especialidades", valor: inst.perfil_especialidades.join(" · ") },
+    inst.perfil_formacion.length > 0 && { etiqueta: "Formación", valor: inst.perfil_formacion.map((f) => [f.titulo, f.institucion, f.anio].filter(Boolean).join(", ")).join(" / ") },
+    inst.perfil_experiencia && { etiqueta: "Experiencia", valor: inst.perfil_experiencia },
+    inst.perfil_certificaciones.length > 0 && { etiqueta: "Certificaciones", valor: inst.perfil_certificaciones.join(" · ") },
+    inst.perfil_cursos.length > 0 && { etiqueta: "Cursos", valor: inst.perfil_cursos.join(" · ") },
+  ].filter(Boolean) as { etiqueta: string; valor: string }[];
+
+  const contactoFilas = [
+    { etiqueta: "Dirección", valor: `${sitio.direccion ?? ""}${sitio.ciudad ? `, ${sitio.ciudad}` : ""}` },
+    sitio.referencias && { etiqueta: "Referencias", valor: sitio.referencias },
+    horarios.length > 0 && { etiqueta: "Horarios", valor: <>{horarios.map((h) => <span key={h.dias} className="block">{h.dias}: {h.horas}</span>)}</> },
+    sitio.telefono && { etiqueta: "Teléfono", valor: <a href={`tel:${sitio.telefono}`}>{sitio.telefono}</a> },
+    sitio.email && { etiqueta: "Correo", valor: <a href={`mailto:${sitio.email}`}>{sitio.email}</a> },
+    sitio.redes?.instagram && { etiqueta: "Redes", valor: <a href={sitio.redes.instagram} target="_blank" rel="noopener noreferrer">Instagram</a> },
+  ].filter(Boolean) as { etiqueta: string; valor: React.ReactNode }[];
+
+  const jsonLd = {
+    "@context": "https://schema.org", "@type": "Dentist",
+    name: `${sitio.nombre_comercial} · ${sitio.especialidad ?? ""}`, url: env.sitioUrl, image: `${env.sitioUrl}/img/recepcion.webp`,
+    address: { "@type": "PostalAddress", streetAddress: sitio.direccion, addressLocality: "Ambato", addressRegion: "Tungurahua", addressCountry: "EC" },
+    ...(sitio.telefono ? { telephone: sitio.telefono } : {}),
+    sameAs: Object.values(sitio.redes ?? {}).filter(Boolean),
+    openingHoursSpecification: contenido.horarios.map((h) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][h.dia_semana],
+      opens: h.hora_inicio.slice(0, 5), closes: h.hora_fin.slice(0, 5),
+    })),
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+
+      {/* Portada */}
+      <section className="hero" aria-labelledby="hero-title">
+        <h1 id="hero-title" className="hero__wordmark">Monserrath<br />Montalvo</h1>
+        <figure className="hero__figure">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={sitio.hero_imagen_url ?? "/img/doctora-bata.webp"} alt={`${sitio.nombre_comercial} en su consultorio`} width={288} height={512} fetchPriority="high" />
+        </figure>
+        <div className="hero__copy">
+          <Rotulo>{sitio.especialidad} · Ambato</Rotulo>
+          <p className="hero__claim">{sitio.hero_titulo}</p>
+          <p className="t-body-s hero__sub">{sitio.hero_subtitulo}</p>
+          <div className="hero__ctas">
+            <Cta href="/agendar" variante="acento"><span>Agendar cita</span><span aria-hidden="true">→</span></Cta>
+            <Cta href={wa} variante="contorno" externo><span>Escribir por WhatsApp</span></Cta>
+          </div>
+        </div>
+      </section>
+
+      <section className="statement" aria-label="Filosofía de atención">
+        <RevelarPalabras texto="Escuchar primero. Explicar cada opción. Tratar solo cuando el plan está claro y el paciente lo entiende." />
+      </section>
+
+      {/* Nosotros */}
+      <section className="section narrow" id="nosotros" aria-labelledby="nosotros-title">
+        <Rotulo>Nosotros</Rotulo>
+        <h2 id="nosotros-title" className="t-display">Un consultorio dedicado a devolver función y estética.</h2>
+        {inst.presentacion && <p className="t-body-l soft">{inst.presentacion}</p>}
+        {inst.historia && <div><h3 className="t-label">Historia</h3><p className="t-body">{inst.historia}</p></div>}
+        {(inst.mision || inst.vision) && (
+          <div className="two">
+            {inst.mision && <div><h3 className="t-label">Misión</h3><p className="t-body">{inst.mision}</p></div>}
+            {inst.vision && <div><h3 className="t-label">Visión</h3><p className="t-body">{inst.vision}</p></div>}
+          </div>
+        )}
+        {inst.valores.length > 0 && <p className="t-body soft">{inst.valores.join(" · ")}</p>}
+      </section>
+
+      {inst.diferenciadores.length > 0 && (
+        <section className="section" aria-label="Diferenciadores">
+          <div className="specs">
+            {inst.diferenciadores.map((d, i) => (
+              <div className="specs__item in" key={d.titulo}>
+                <span className="t-label soft">0{i + 1}</span>
+                <h3 className="t-heading">{d.titulo}</h3>
+                <p className="t-body soft">{d.texto}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Doctora */}
+      <section className="section doctor" id="doctora" aria-labelledby="doctora-title">
+        <div className="doctor__media">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={inst.perfil_foto_url ?? "/img/doctora-consultorio.webp"} alt={`Retrato de ${inst.perfil_nombre}`} width={288} height={512} loading="lazy" />
+        </div>
+        <div className="doctor__info">
+          <Rotulo>Perfil profesional</Rotulo>
+          <h2 id="doctora-title" className="t-display">{inst.perfil_nombre}</h2>
+          <p className="t-title doctor__role">{inst.perfil_titulo}</p>
+          {inst.perfil_biografia && <p className="t-body-l soft">{inst.perfil_biografia}</p>}
+          <SpecTable filas={perfilFilas} />
+          {inst.perfil_enfoque && <p className="t-body soft"><em>{inst.perfil_enfoque}</em></p>}
+        </div>
+      </section>
+
+      {/* Servicios */}
+      <section className="section" id="servicios" aria-labelledby="servicios-title">
+        <div className="section__head">
+          <h2 id="servicios-title" className="t-display">Tratamientos <sup className="t-label">{servicios.length}</sup></h2>
+          <NavLink href="/tratamientos">Ver todos</NavLink>
+        </div>
+        <div className="cards">{destacados.map((s) => <TarjetaServicio key={s.id} s={s} wa={wa} />)}</div>
+      </section>
+
+      {/* Resultados */}
+      <section className="section" id="resultados" aria-labelledby="resultados-title">
+        <div className="narrow center">
+          <Rotulo>Antes y después</Rotulo>
+          <h2 id="resultados-title" className="t-display">Resultados</h2>
+          <p className="t-body soft">Casos reales de pacientes que autorizaron su publicación. Fotografías sin retoque, con la misma luz y encuadre antes y después.</p>
+        </div>
+        {contenido.casos.length > 0 ? (
+          <div className="cases">
+            {contenido.casos.map((c) => (
+              <article className="case" key={c.id}>
+                <Comparador antes={c.imagen_antes_url} despues={c.imagen_despues_url} titulo={c.titulo ?? nombreServicio(c.servicio_id) ?? "Caso"} />
+                <div className="card__line t-label"><span>{nombreServicio(c.servicio_id) ?? c.titulo}</span>{c.periodo && <span>{c.periodo}</span>}</div>
+                {c.descripcion && <p className="t-body-s soft">{c.descripcion}</p>}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="t-body soft center empty">Pronto publicaremos casos reales con autorización de los pacientes.</p>
+        )}
+      </section>
+
+      {/* Pieza destacada */}
+      <section className="section feature" aria-labelledby="feature-title">
+        <figure className="feature__media">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/img/protesis-circonio-detalle.webp" alt="Prótesis dental fija de circonio" width={432} height={220} loading="lazy" />
+        </figure>
+        <div className="narrow center">
+          <Rotulo>Materiales</Rotulo>
+          <h2 id="feature-title" className="t-heading">Prótesis de circonio: resistencia y un aspecto natural.</h2>
+          <p className="t-body soft">El circonio permite restauraciones fijas resistentes y de color similar al diente natural. La valoración define si es la opción adecuada para cada caso.</p>
+          <Cta href="/agendar?servicio=valoracion"><span>Agendar valoración</span></Cta>
+        </div>
+      </section>
+
+      {/* Instalaciones */}
+      <section className="section" id="instalaciones" aria-labelledby="instalaciones-title">
+        <div className="section__head">
+          <h2 id="instalaciones-title" className="t-display">El consultorio</h2>
+          <p className="t-body soft section__aside">Conozca el espacio antes de su primera cita.</p>
+        </div>
+        <Galeria items={contenido.galeria} />
+      </section>
+
+      {/* Testimonios */}
+      <section className="section narrow center" id="testimonios" aria-labelledby="testimonios-title">
+        <Rotulo>Pacientes</Rotulo>
+        <h2 id="testimonios-title" className="t-display">Experiencias</h2>
+        <div className="testimonials">
+          {contenido.testimonios.length > 0 ? contenido.testimonios.map((t) => (
+            <blockquote className="quote" key={t.id}>
+              <p className="t-title"><em>“{t.comentario}”</em></p>
+              <footer className="t-label">{t.nombre_autorizado}{t.servicio_id && <> · <span className="soft">{nombreServicio(t.servicio_id)}</span></>}</footer>
+            </blockquote>
+          )) : (
+            <>
+              <p className="t-body soft">Aquí se publicarán opiniones de pacientes que autoricen compartir su experiencia.</p>
+              {sitio.redes?.instagram && <NavLink href={sitio.redes.instagram} externo>Ver el consultorio en Instagram</NavLink>}
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Llamado a agendar */}
+      <section className="section narrow center" aria-labelledby="agenda-cta">
+        <Rotulo>Agenda en línea</Rotulo>
+        <h2 id="agenda-cta" className="t-display">Elija el día y la hora que le convienen.</h2>
+        <p className="t-body soft">Los horarios se actualizan en tiempo real. Recibirá la confirmación por correo, con un enlace para reprogramar o cancelar.</p>
+        <div><Cta href="/agendar"><span>Ver horarios disponibles</span><span aria-hidden="true">→</span></Cta></div>
+      </section>
+
+      {/* Preguntas */}
+      <section className="section faq" id="preguntas" aria-labelledby="faq-title">
+        <h2 id="faq-title" className="t-display center">Preguntas frecuentes</h2>
+        <Acordeon items={contenido.faq} />
+      </section>
+
+      {/* Ubicación y contacto */}
+      <section className="section location" id="contacto" aria-labelledby="contacto-title">
+        <div className="location__map">
+          <iframe title="Mapa del consultorio" loading="lazy" referrerPolicy="no-referrer-when-downgrade" src={`https://www.google.com/maps?q=${mapsQ}&output=embed`} />
+        </div>
+        <div className="location__info">
+          <Rotulo>Ubicación y contacto</Rotulo>
+          <h2 id="contacto-title" className="t-display">Cómo llegar</h2>
+          <SpecTable filas={contactoFilas} />
+          <div className="location__ctas">
+            <Cta href={`https://www.google.com/maps/search/?api=1&query=${mapsQ}`} externo><span>Abrir en Google Maps</span><span aria-hidden="true">↗</span></Cta>
+            <Cta href={wa} variante="contorno" externo><span>WhatsApp</span></Cta>
+          </div>
+          <FormularioContacto />
+          <p className="t-caption soft">Sus datos se usan solo para responder su mensaje. <Link href="/privacidad" className="underline">Política de privacidad</Link>.</p>
+        </div>
+      </section>
+    </>
+  );
+}

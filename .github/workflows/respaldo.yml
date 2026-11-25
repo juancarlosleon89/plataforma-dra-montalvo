@@ -1,0 +1,25 @@
+# Respaldo semanal de la base de datos de Supabase (artefacto privado, 30 días).
+# Requiere el secreto SUPABASE_DB_URL (Project Settings → Database → Connection string → URI).
+name: Respaldo semanal de la base de datos
+on:
+  schedule:
+    - cron: "17 8 * * 1"   # lunes 03:17 en Ecuador
+  workflow_dispatch:
+jobs:
+  respaldo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Volcado de esquema y datos
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f esquema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only -f datos.sql
+      - uses: actions/upload-artifact@v4
+        with:
+          name: respaldo-${{ github.run_number }}
+          path: "*.sql"
+          retention-days: 30
