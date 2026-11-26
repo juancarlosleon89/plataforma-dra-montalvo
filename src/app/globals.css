@@ -330,13 +330,22 @@ h1, h2, h3, p, figure, dl, dd, blockquote { margin: 0; }
 }
 
 /* ---------- Ubicación ---------- */
-/* ---------- Instagram ---------- */
-.insta { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--grid-gutter); }
-.insta__item { background: var(--color-product-bg); border-radius: var(--radius-md); overflow: hidden; height: 640px; }
-.insta__item iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
+/* ---------- Instagram: carrusel de videos ---------- */
+.insta-car { position: relative; }
+.insta-car__pista { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 3 * var(--grid-gutter)) / 4); column-gap: var(--grid-gutter);
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; padding-bottom: 2px; }
+.insta-car__pista::-webkit-scrollbar { display: none; }
+.insta-car__pista:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 4px; }
+/* Marco 4:5 = solo el video; la cabecera (54 px) y el pie del reproductor quedan fuera del marco. */
+.insta-car__item { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius-md); background: var(--color-ink); scroll-snap-align: start; }
+.insta-car__item iframe { position: absolute; left: 0; top: -54px; width: 100%; height: calc(100% + 54px + 320px); border: 0; }
+.insta-car__nav { display: flex; justify-content: flex-end; gap: var(--space-10); margin-top: var(--space-16); }
+.insta-car__btn { width: 46px; height: 42px; border: 0; border-radius: var(--radius-lg); background: var(--color-surface-option); color: var(--color-ink); font: 400 18px/1 var(--font-sans); cursor: pointer; transition: background-color var(--dur-base), color var(--dur-base), opacity var(--dur-base); }
+.insta-car__btn:disabled { opacity: .3; cursor: default; }
+@media (hover: hover) and (pointer: fine) { .insta-car__btn:not(:disabled):hover { background: var(--color-ink); color: var(--color-paper); } }
 .insta__cta { margin-top: var(--space-40); display: flex; justify-content: center; }
-@media (max-width: 1023px) { .insta { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 599px) { .insta { grid-template-columns: 1fr; } .insta__item { height: 600px; } }
+@media (max-width: 1023px) { .insta-car__pista { grid-auto-columns: calc((100% - 2 * var(--grid-gutter)) / 2.4); } }
+@media (max-width: 599px) { .insta-car__pista { grid-auto-columns: 78%; } }
 
 .location { display: grid; grid-template-columns: 1fr 1fr; gap: calc(67 * var(--vr)); align-items: start; }
 .location__map { position: sticky; top: var(--header-height); height: calc(100svh - var(--header-height) - var(--space-40)); background: var(--color-product-bg); }

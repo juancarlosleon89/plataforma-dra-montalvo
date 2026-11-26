@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CarruselInstagram } from "@/components/sitio/CarruselInstagram";
 import { Acordeon, Cta, NavLink, Rotulo, SpecTable } from "@/components/ui";
 import { Comparador, FormularioContacto, Galeria, RevelarPalabras } from "@/components/sitio/Interactivos";
 import { TarjetaServicio } from "@/components/sitio/TarjetaServicio";
@@ -15,7 +16,10 @@ export default async function Inicio() {
     .map((u) => u.match(/instagram\.com\/(?:[\w.]+\/)?(p|reel|tv)\/([\w-]+)/))
     .filter((m): m is RegExpMatchArray => !!m)
     .map((m) => ({ tipo: m[1] === "tv" ? "p" : m[1], codigo: m[2] }))
-    .slice(0, 9);
+    .slice(0, 12);
+  // El carrusel muestra solo videos (reels); si no hay ninguno, usa las publicaciones disponibles.
+  const reels = instagram.filter((p) => p.tipo === "reel");
+  const videosInstagram = reels.length ? reels : instagram;
   const perfilInstagram = sitio.redes?.instagram || null;
   const usuarioInstagram = perfilInstagram?.match(/instagram\.com\/([\w.]+)/)?.[1] ?? "instagram";
   const mapsQ = encodeURIComponent(sitio.maps_query ?? sitio.direccion ?? "");
@@ -197,21 +201,13 @@ export default async function Inicio() {
       </section>
 
       {/* Instagram */}
-      {(instagram.length > 0 || perfilInstagram) && (
+      {(videosInstagram.length > 0 || perfilInstagram) && (
         <section className="section" id="instagram" aria-labelledby="instagram-title">
           <div className="section__head">
             <h2 id="instagram-title" className="t-display">{t["inicio.instagram_titulo"]}</h2>
             {perfilInstagram && <NavLink href={perfilInstagram} externo>{`@${usuarioInstagram} ↗`}</NavLink>}
           </div>
-          {instagram.length > 0 && (
-            <div className="insta">
-              {instagram.map((p) => (
-                <div className="insta__item" key={p.codigo}>
-                  <iframe title={`Publicación de Instagram ${p.codigo}`} src={`https://www.instagram.com/${p.tipo}/${p.codigo}/embed/`} loading="lazy" scrolling="no" allowFullScreen />
-                </div>
-              ))}
-            </div>
-          )}
+          {videosInstagram.length > 0 && <CarruselInstagram videos={videosInstagram} />}
           {perfilInstagram && (
             <div className="center insta__cta">
               <Cta href={perfilInstagram} externo variante="contorno"><span>{t["inicio.instagram_boton"]}</span><span aria-hidden="true">↗</span></Cta>
