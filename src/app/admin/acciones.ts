@@ -63,6 +63,28 @@ export async function cambiarEstadoCita(id: string, estado: (typeof ESTADOS)[num
   redirect(`/admin/citas/${id}?ok=${encodeURIComponent("Estado actualizado.")}`);
 }
 
+/**
+ * Elimina una cita de forma permanente (solo administración). Antes de borrarla, si tiene evento en
+ * Google Calendar, pide al Apps Script que lo quite (sin enviar correo de cancelación al paciente).
+ * Si el script no responde, la reconciliación horaria borra el evento huérfano.
+ */
+export async function eliminarCita(id: string, fd: FormData) {
+  const { sb } = await requerirPersonal("admin");
+  const volver = (m: string) => redirect(`/admin/citas/${id}?error=${encodeURIComponent(m)}`);
+  if (fd.get("confirmar") !== "on") volver("Marque la casilla para confirmar la eliminación.");
+  const { data: tieneEvento, error } = await sb.rpc("admin_preparar_eliminacion", { p_cita: id });
+  if (error) volver(mensajeBD(error.message));
+  let aviso = "";
+  if (tieneEvento) {
+    const r = await avisarAppsScript("eliminacion", { cita_id: id });
+    if (!r.ok) aviso = " El evento de Google Calendar se quitará en la próxima revisión automática (máximo 1 hora).";
+  }
+  const { data: codigo, error: e2 } = await sb.rpc("admin_eliminar_cita", { p_cita: id });
+  if (e2) volver(mensajeBD(e2.message));
+  regenerar(["/agendar", "/admin/citas"]);
+  redirect(`/admin/citas?ok=${encodeURIComponent(`Cita ${codigo} eliminada${tieneEvento && !aviso ? " del panel y de Google Calendar" : ""}.${aviso}`)}`);
+}
+
 export async function reprogramarCita(id: string, _prev: Resultado, fd: FormData): Promise<Resultado> {
   try {
     const { sb } = await requerirPersonal();

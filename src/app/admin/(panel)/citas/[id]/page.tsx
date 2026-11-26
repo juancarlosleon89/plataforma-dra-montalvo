@@ -4,13 +4,13 @@ import { Avisos, Encabezado, Estado, Seccion } from "@/components/admin/Piezas";
 import { FormReprogramar, FormNota } from "@/components/admin/FormulariosCita";
 import { requerirPersonal } from "@/lib/admin";
 import { fechaHora, fechaLarga, hora, diaLocal } from "@/lib/formato";
-import { cambiarEstadoCita, reencolarSincronizacion } from "../../../acciones";
+import { cambiarEstadoCita, eliminarCita, reencolarSincronizacion } from "../../../acciones";
 
 export const metadata = { title: "Detalle de cita" };
 
 export default async function DetalleCita({ params, searchParams }: PageProps<"/admin/citas/[id]">) {
   const [{ id }, sp] = await Promise.all([params, searchParams]);
-  const { sb } = await requerirPersonal();
+  const { sb, yo } = await requerirPersonal();
   const { data: c } = await sb.from("citas")
     .select("*, servicios(id, nombre, duracion_minutos), pacientes(id, nombres, apellidos, telefono, email)")
     .eq("id", id).maybeSingle();
@@ -56,6 +56,14 @@ export default async function DetalleCita({ params, searchParams }: PageProps<"/
           </div>
           {activa && <FormReprogramar id={id} servicioId={s.id} diaInicial={diaLocal(new Date(c.inicio))} />}
           <FormNota id={id} valor={c.observaciones_admin ?? ""} />
+          {yo.rol === "admin" && (
+            <form action={eliminarCita.bind(null, id)} className="adm-form adm-form--bloque adm-eliminar">
+              <p className="t-label">Eliminar cita</p>
+              <p className="t-body-s soft">Borra la cita del panel y su evento de Google Calendar. No se envía correo al paciente: si quiere avisarle, use «Cancelar cita». Esta acción no se puede deshacer.</p>
+              <label className="adm-check t-body-s"><input type="checkbox" name="confirmar" required /> Confirmo que quiero eliminar la cita {c.codigo} de forma permanente</label>
+              <div><button className="cta cta--small t-button adm-peligro">Eliminar cita</button></div>
+            </form>
+          )}
         </Seccion>
       </div>
       <Seccion titulo="Historial">
